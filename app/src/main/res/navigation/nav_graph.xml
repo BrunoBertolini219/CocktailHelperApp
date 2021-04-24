@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/alcoholicCocktailFragment">
+    <fragment
+        android:id="@+id/alcoholicCocktailFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailFragment"
+        android:label="AlcoholicCocktailFragment" >
+        <action
+            android:id="@+id/action_alcoholicCocktailFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/nonAlcoholicCocktailFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.noalcoholic.NonAlcoholicCocktailFragment"
+        android:label="non_alcoholic_cocktail_fragment"
+        tools:layout="@layout/non_alcoholic_cocktail_fragment" >
+        <action
+            android:id="@+id/action_nonAlcoholicCocktailFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailFragment"
+        android:label="fragment_detail"
+        tools:layout="@layout/fragment_detail" >
+        <action
+            android:id="@+id/action_detailFragment_to_nonAlcoholicCocktailFragment"
+            app:destination="@id/nonAlcoholicCocktailFragment" />
+        <action
+            android:id="@+id/action_detailFragment_to_alcoholicCocktailFragment"
+            app:destination="@id/alcoholicCocktailFragment" />
+        <argument
+            android:name="drink"
+            app:argType="br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchCocktailFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.search.SearchCocktailFragment"
+        android:label="search_cocktail_fragment"
+        tools:layout="@layout/search_cocktail_fragment" >
+        <action
+            android:id="@+id/action_searchCocktailFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedCocktailFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.favorites.SavedCocktailFragment"
+        android:label="saved_cocktail_fragment"
+        tools:layout="@layout/saved_cocktail_fragment" >
+        <action
+            android:id="@+id/action_savedCocktailFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+</navigation>
