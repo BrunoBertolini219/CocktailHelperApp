@@ -40,4 +40,10 @@ class DetailViewModel(
         repository.upsert(drink)
     }
 
+    fun getRandomDrink() = viewModelScope.launch {
+        drinkLiveData.postValue(Resource.Loading())
+        val response = repository.randomDrink()
+        drinkLiveData.postValue(handleSearchCocktailResponse(response))
+    }
+
 }

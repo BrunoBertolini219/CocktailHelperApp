@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -37,12 +38,15 @@ class SearchCocktailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as AppCompatActivity)
+            .supportActionBar?.setDisplayHomeAsUpEnabled(false)
         _viewBinding = SearchCocktailFragmentBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        requireActivity().title = "Search Drinks"
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val searchViewModelFactory = SearchProviderViewModelFactory(repository)
         viewModel =
@@ -109,6 +113,10 @@ class SearchCocktailFragment : Fragment() {
             adapter = cocktailAdapter
             hasFixedSize()
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 
 }

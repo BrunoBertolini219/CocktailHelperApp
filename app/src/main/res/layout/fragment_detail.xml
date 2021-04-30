@@ -10,10 +10,10 @@
         android:id="@+id/cv_drink_detail"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:background="@color/purple_200"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@color/purple_200"
         android:orientation="vertical"
         app:cardCornerRadius="12dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -26,7 +26,7 @@
             android:id="@+id/iv_drink_detail"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:src="@tools:sample/avatars"/>
+            tools:src="@tools:sample/avatars" />
 
     </androidx.cardview.widget.CardView>
 
@@ -71,18 +71,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title_detail" />
 
+
     <TextView
-        android:id="@+id/tv_ingredients"
-        android:layout_width="0dp"
+        android:id="@+id/tv_measure"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:text="Ingrediants list"
+        android:layout_marginStart="8dp"
         android:textSize="16sp"
         android:typeface="sans"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tv_ingredients"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:text=" Measures List " />
+
+    <TextView
+        android:id="@+id/tv_ingredients"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:typeface="sans"
+        app:layout_constraintStart_toEndOf="@+id/tv_measure"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        tools:text=" Ingrediants list " />
 
     <TextView
         android:id="@+id/tv_instructions"
@@ -91,9 +102,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:typeface="sans"
-        android:textSize="16sp"
         android:text="Instructions"
+        android:textSize="16sp"
+        android:typeface="sans"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -118,10 +129,14 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/design_default_color_primary"
         android:clickable="true"
-        android:src="@drawable/ic_favorite"
+        android:focusable="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/black"
+        app:srcCompat="@drawable/ic_favorite"
+        app:tint="@color/white" />
 
     <TextView
         android:id="@+id/textView3"

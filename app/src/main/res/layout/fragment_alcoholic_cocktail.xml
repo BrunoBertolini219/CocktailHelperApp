@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:name="br.com.brunoccbertolini.cocktailhelperapp.ItemFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".ui.fragments.alcoholic.AlcoholicCocktailFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_cocktail_list"
@@ -15,7 +16,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:context=".ui.fragments.alcoholic.AlcoholicCocktailFragment"
+
         tools:listitem="@layout/cocktail_item" />
 
     <ProgressBar

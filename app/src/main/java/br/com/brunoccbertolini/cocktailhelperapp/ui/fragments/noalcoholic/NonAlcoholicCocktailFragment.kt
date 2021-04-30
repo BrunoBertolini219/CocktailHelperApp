@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 
@@ -33,12 +34,16 @@ class NonAlcoholicCocktailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        (activity as AppCompatActivity)
+            .supportActionBar?.setDisplayHomeAsUpEnabled(false)
         _viewBinding = NonAlcoholicCocktailFragmentBinding.inflate(inflater, container, false)
         return viewBinding.root
+
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        requireActivity().title = "Non-Alcoholic Drinks"
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val viewModelFactory = NonAlcoholicCocktailViewModelProviderFactory(repository)
         viewModel =
@@ -54,7 +59,7 @@ class NonAlcoholicCocktailFragment : Fragment() {
                 putSerializable("drink", it)
             }
             findNavController().navigate(
-                R.id.action_nonAlcoholicCocktailFragment_to_detailFragment, bundle
+                R.id.action_cocktailFragment_to_detailFragment, bundle
             )
         }
     }
@@ -100,5 +105,9 @@ class NonAlcoholicCocktailFragment : Fragment() {
 
     private fun showProgressBar() {
         viewBinding.paginationProgressBar.visibility = View.VISIBLE
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 }

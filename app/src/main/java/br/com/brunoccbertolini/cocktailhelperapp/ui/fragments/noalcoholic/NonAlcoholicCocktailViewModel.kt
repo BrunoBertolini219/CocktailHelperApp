@@ -8,6 +8,7 @@ import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import java.lang.Exception
 
 
 class NonAlcoholicCocktailViewModel(val cocktailRepository: CocktailRepository) : ViewModel() {
@@ -20,9 +21,15 @@ class NonAlcoholicCocktailViewModel(val cocktailRepository: CocktailRepository) 
     }
 
     fun getNonAlcoholicCocktails() = viewModelScope.launch {
-        cocktailNoAlcoholic.postValue(Resource.Loading())
-        val response = cocktailRepository.getAllNoAlcoholicDrinks()
-        cocktailNoAlcoholic.postValue(handleNoAlcoholicCocktailResponse(response))
+        try {
+
+
+            cocktailNoAlcoholic.postValue(Resource.Loading())
+            val response = cocktailRepository.getAllNoAlcoholicDrinks()
+            cocktailNoAlcoholic.postValue(handleNoAlcoholicCocktailResponse(response))
+        }catch (ex: Exception){
+
+        }
     }
 
     private fun handleNoAlcoholicCocktailResponse(response: Response<CocktailList>): Resource<CocktailList> {

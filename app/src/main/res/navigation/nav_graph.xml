@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/alcoholicCocktailFragment">
+    app:startDestination="@id/cocktailFragment">
     <fragment
         android:id="@+id/alcoholicCocktailFragment"
         android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailFragment"
@@ -54,4 +54,23 @@
             android:id="@+id/action_savedCocktailFragment_to_detailFragment"
             app:destination="@id/detailFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/cocktailFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.cocktail.CocktailFragment"
+        android:label="fragment_cocktail"
+        tools:layout="@layout/fragment_cocktail" >
+        <action
+            android:id="@+id/action_cocktailFragment_to_alcoholicCocktailFragment"
+            app:destination="@id/alcoholicCocktailFragment" />
+        <action
+            android:id="@+id/action_cocktailFragment_to_nonAlcoholicCocktailFragment"
+            app:destination="@id/nonAlcoholicCocktailFragment" />
+        <action
+            android:id="@+id/action_cocktailFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/randomDrinkFragment"
+        android:name="br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.random.RandomDrinkFragment"
+        android:label="RandomDrinkFragment" />
 </navigation>

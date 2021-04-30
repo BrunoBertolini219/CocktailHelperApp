@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,13 +16,14 @@ import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentAlcoholicCo
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import com.google.android.material.tabs.TabLayoutMediator
 
 
 class AlcoholicCocktailFragment : Fragment() {
 
 
-    private var _bindingView: FragmentAlcoholicCocktailBinding? = null
-    private val bindingView: FragmentAlcoholicCocktailBinding get() = _bindingView!!
+    private var _viewBinding: FragmentAlcoholicCocktailBinding? = null
+    private val viewBinding: FragmentAlcoholicCocktailBinding get() = _viewBinding!!
 
     private lateinit var viewModelAlcoholic: AlcoholicCocktailViewModel
     private lateinit var adapterCocktail: CocktailListAdapter
@@ -32,17 +34,22 @@ class AlcoholicCocktailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _bindingView = FragmentAlcoholicCocktailBinding.inflate(inflater, container, false)
-        return bindingView.root
+        (activity as AppCompatActivity)
+            .supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        _viewBinding = FragmentAlcoholicCocktailBinding.inflate(inflater, container, false)
+        return viewBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        requireActivity().title = "Alcoholic Drinks"
         val cockTailRepository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val viewModelProviderFactory = AlcoholicCocktailViewModelProviderFactory(cockTailRepository)
         viewModelAlcoholic = ViewModelProvider(this, viewModelProviderFactory).get(
-            AlcoholicCocktailViewModel::class.java)
+            AlcoholicCocktailViewModel::class.java
+        )
+
+
         setupRecyclerView()
         setupObservers()
 
@@ -50,11 +57,11 @@ class AlcoholicCocktailFragment : Fragment() {
             val bundle = Bundle().apply {
                 putSerializable("drink", it)
             }
-            findNavController().navigate(R.id.action_alcoholicCocktailFragment_to_detailFragment,
-            bundle)
+            findNavController().navigate(
+                R.id.action_cocktailFragment_to_detailFragment,
+                bundle
+            )
         }
-
-
     }
 
     private fun setupObservers() {
@@ -68,7 +75,7 @@ class AlcoholicCocktailFragment : Fragment() {
                 }
                 is Resource.Error -> {
                     response.message?.let { message ->
-                        Log.e(TAG, "An Error Occured $message", )
+                        Log.e(TAG, "An Error Occured $message")
                         hideProgressBar()
                     }
                 }
@@ -82,19 +89,23 @@ class AlcoholicCocktailFragment : Fragment() {
     }
 
     private fun hideProgressBar() {
-        bindingView.paginationProgressBar.visibility = View.INVISIBLE
+        viewBinding.paginationProgressBar.visibility = View.INVISIBLE
     }
 
     private fun showProgressBar() {
-        bindingView.paginationProgressBar.visibility = View.VISIBLE
+        viewBinding.paginationProgressBar.visibility = View.VISIBLE
     }
 
     private fun setupRecyclerView() {
         adapterCocktail = CocktailListAdapter()
-        bindingView.rvCocktailList.apply {
+        viewBinding.rvCocktailList.apply {
             adapter = adapterCocktail
-            hasFixedSize()
+            setHasFixedSize(true)
             layoutManager = GridLayoutManager(this@AlcoholicCocktailFragment.requireContext(), 2)
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 }

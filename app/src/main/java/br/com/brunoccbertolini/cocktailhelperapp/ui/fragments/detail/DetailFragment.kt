@@ -1,13 +1,17 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail
 
+import android.app.Activity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.view.inputmethod.InputMethodManager
+import androidx.activity.OnBackPressedCallback
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentDetailBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
@@ -15,6 +19,7 @@ import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import kotlin.text.Typography.bullet
 
 
 class DetailFragment : Fragment() {
@@ -30,13 +35,34 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().title = "Drink Recipe"
+        (activity as AppCompatActivity).supportActionBar?.let {
+            it.setHomeButtonEnabled(true)
+            it.setDisplayShowHomeEnabled(true)
+            it.setDisplayHomeAsUpEnabled(true)
+            it.setHomeAsUpIndicator(R.drawable.ic_back)
+        }
+
+
         _viewBinding = FragmentDetailBinding.inflate(inflater, container, false)
         return viewBinding.root
+
     }
+
+//    private fun setreturnBack(): Boolean {
+//        val imn = requireActivity()
+//            .getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+//        imn.hideSoftInputFromWindow(viewBinding.root.windowToken, 0)
+//
+//        val action = R.id.action_detailFragment_to_alcoholicCocktailFragment
+//        findNavController().navigate(action)
+//        return true
+//    }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val drink = args.drink
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val viewModelFactory = DetailViewModelProviderFactory(repository)
@@ -53,7 +79,17 @@ class DetailFragment : Fragment() {
             Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT).show()
         }
 
+//        requireActivity().onBackPressedDispatcher.addCallback(
+//            viewLifecycleOwner,
+//            object : OnBackPressedCallback(true) {
+//                override fun handleOnBackPressed() {
+//                    setreturnBack()
+//                }
+//            }
+//        )
+
     }
+
 
     private fun setupDetailSearch() {
         viewModel.drinkLiveData.observe(viewLifecycleOwner, { response ->
@@ -75,7 +111,18 @@ class DetailFragment : Fragment() {
                 }
             }
         })
-        }
+    }
+
+//    override fun onContextItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            android.R.id.home -> {
+//                findNavController().popBackStack()
+//                return true
+//            }
+//        }
+//        return super.onContextItemSelected(item)
+//    }
+
 
 
     fun bindItemsDetail(drinkResponse: Drink) {
@@ -83,6 +130,7 @@ class DetailFragment : Fragment() {
         viewBinding.apply {
             tvTitleDetail.text = drinkResponse.strDrink
             tvIngredients.text = checkIngredients(drinkResponse)
+            tvMeasure.text = checkMeasure(drinkResponse)
             tvInstructions.text = drinkResponse.strInstructions
         }
         Glide.with(this)
@@ -91,27 +139,47 @@ class DetailFragment : Fragment() {
 
     }
 
-    fun checkIngredients(drink: Drink): String{
-        var drinksIngredients =""
+    private fun checkMeasure(drink: Drink): String {
+        var drinksMeasure = ""
 
         drink.apply {
-            if (!strIngredient1.isNullOrBlank()) drinksIngredients += "\n $strMeasure1  $strIngredient1"
-            if (!strIngredient2.isNullOrBlank()) drinksIngredients += "\n $strMeasure2  $strIngredient2"
-            if (!strIngredient3.isNullOrBlank()) drinksIngredients += "\n $strMeasure3  $strIngredient3"
-            if (!strIngredient4.isNullOrBlank()) drinksIngredients += "\n $strMeasure4  $strIngredient4"
-            if (!strIngredient5.isNullOrBlank()) drinksIngredients += "\n $strMeasure5 $strIngredient5"
-            if (!strIngredient6.isNullOrBlank()) drinksIngredients += "\n $strMeasure6 $strIngredient6"
-            if (!strIngredient7.isNullOrBlank()) drinksIngredients += "\n $strMeasure7 $strIngredient7"
-            if (!strIngredient8.isNullOrBlank()) drinksIngredients += "\n $strMeasure8 $strIngredient8"
-            if (!strIngredient9.isNullOrBlank()) drinksIngredients += "\n $strMeasure9 $strIngredient9"
-            if (!strIngredient10.isNullOrBlank()) drinksIngredients += "\n $strMeasure10 $strIngredient10"
-            if (!strIngredient11.isNullOrBlank()) drinksIngredients += "\n $strMeasure11 $strIngredient11"
-            if (!strIngredient12.isNullOrBlank()) drinksIngredients += "\n $strMeasure12 $strIngredient12"
+
+            if (!strMeasure1.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure1" else if (!strIngredient1.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure2.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure2" else if (!strIngredient2.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure3.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure3" else if (!strIngredient3.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure4.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure4" else if (!strIngredient4.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure5.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure5" else if (!strIngredient5.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure6.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure6" else if (!strIngredient6.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure7.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure7" else if (!strIngredient7.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure8.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure8" else if (!strIngredient8.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure9.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure9" else if (!strIngredient9.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strMeasure10.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure10" else if (!strIngredient10.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strIngredient11.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure11" else if (!strIngredient11.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            if (!strIngredient12.isNullOrBlank()) drinksMeasure += "\n $bullet $strMeasure12" else if (!strIngredient12.isNullOrBlank()) drinksMeasure += "\n $bullet  -"
+            return drinksMeasure
+        }
+
+    }
+
+    private fun checkIngredients(drink: Drink): String {
+        var drinksIngredients = ""
+
+        drink.apply {
+            if (!strIngredient1.isNullOrBlank()) drinksIngredients += "\n $strIngredient1"
+            if (!strIngredient2.isNullOrBlank()) drinksIngredients += "\n $strIngredient2"
+            if (!strIngredient3.isNullOrBlank()) drinksIngredients += "\n $strIngredient3"
+            if (!strIngredient4.isNullOrBlank()) drinksIngredients += "\n $strIngredient4"
+            if (!strIngredient5.isNullOrBlank()) drinksIngredients += "\n $strIngredient5"
+            if (!strIngredient6.isNullOrBlank()) drinksIngredients += "\n $strIngredient6"
+            if (!strIngredient7.isNullOrBlank()) drinksIngredients += "\n $strIngredient7"
+            if (!strIngredient8.isNullOrBlank()) drinksIngredients += "\n $strIngredient8"
+            if (!strIngredient9.isNullOrBlank()) drinksIngredients += "\n $strIngredient9"
+            if (!strIngredient10.isNullOrBlank()) drinksIngredients += "\n $strIngredient10"
+            if (!strIngredient11.isNullOrBlank()) drinksIngredients += "\n $strIngredient11"
+            if (!strIngredient12.isNullOrBlank()) drinksIngredients += "\n $strIngredient12"
             return drinksIngredients
         }
     }
-
-
 
     private fun hideProgressBar() {
         viewBinding.paginationProgressBar.visibility = View.INVISIBLE
@@ -119,5 +187,10 @@ class DetailFragment : Fragment() {
 
     private fun showProgressBar() {
         viewBinding.paginationProgressBar.visibility = View.VISIBLE
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _viewBinding = null
     }
 }
