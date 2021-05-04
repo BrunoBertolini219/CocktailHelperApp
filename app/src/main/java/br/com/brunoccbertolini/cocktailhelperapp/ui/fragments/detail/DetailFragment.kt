@@ -1,10 +1,12 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,6 +18,8 @@ import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentDetailBindi
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailFragment
+import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
@@ -28,6 +32,7 @@ class DetailFragment : Fragment() {
     private var _viewBinding: FragmentDetailBinding? = null
     private val viewBinding: FragmentDetailBinding get() = _viewBinding!!
 
+    private lateinit var connectionLivedata: ConnectionLiveData
     private lateinit var viewModel: DetailViewModel
 
     val args: DetailFragmentArgs by navArgs()
@@ -36,13 +41,13 @@ class DetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         requireActivity().title = "Drink Recipe"
+
         (activity as AppCompatActivity).supportActionBar?.let {
             it.setHomeButtonEnabled(true)
             it.setDisplayShowHomeEnabled(true)
             it.setDisplayHomeAsUpEnabled(true)
             it.setHomeAsUpIndicator(R.drawable.ic_back)
         }
-
 
         _viewBinding = FragmentDetailBinding.inflate(inflater, container, false)
         return viewBinding.root
@@ -62,34 +67,35 @@ class DetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val drink = args.drink
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val viewModelFactory = DetailViewModelProviderFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+        viewModel =
+            ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+        connectionLivedata = ConnectionLiveData(this.requireContext())
+        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+            if (isAvailable) {
+                setupDetailSearch()
+                viewModel.getDrinkDetail(drink.idDrink)
+                Glide.with(this)
+                    .load(drink.strDrinkThumb)
+                    .into(viewBinding.ivDrinkDetail)
+
+                viewBinding.floatingActionButton.setOnClickListener {
+                    viewModel.saveCocktail(drink)
+                    Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT).show()
+                }
+
+            } else {
+                Toast.makeText(
+                    this.requireContext(),
+                    "No Internet Connection Available!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
         viewBinding.tvTitleDetail.text = drink.strDrink
-        viewModel.getDrinkDetail(drink.idDrink)
-        Glide.with(this)
-            .load(drink.strDrinkThumb)
-            .into(viewBinding.ivDrinkDetail)
-        setupDetailSearch()
-
-        viewBinding.floatingActionButton.setOnClickListener {
-            viewModel.saveCocktail(drink)
-            Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT).show()
-        }
-
-//        requireActivity().onBackPressedDispatcher.addCallback(
-//            viewLifecycleOwner,
-//            object : OnBackPressedCallback(true) {
-//                override fun handleOnBackPressed() {
-//                    setreturnBack()
-//                }
-//            }
-//        )
-
     }
-
 
     private fun setupDetailSearch() {
         viewModel.drinkLiveData.observe(viewLifecycleOwner, { response ->
@@ -113,17 +119,25 @@ class DetailFragment : Fragment() {
         })
     }
 
-//    override fun onContextItemSelected(item: MenuItem): Boolean {
-//        when (item.itemId) {
-//            android.R.id.home -> {
-//                findNavController().popBackStack()
-//                return true
-//            }
-//        }
-//        return super.onContextItemSelected(item)
-//    }
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().navigateUp()
+                return true
+            }
+        }
+        return super.onContextItemSelected(item)
+    }
 
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                findNavController().navigateUp()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
 
     fun bindItemsDetail(drinkResponse: Drink) {
 
@@ -138,6 +152,7 @@ class DetailFragment : Fragment() {
             .into(viewBinding.ivDrinkDetail)
 
     }
+
 
     private fun checkMeasure(drink: Drink): String {
         var drinksMeasure = ""

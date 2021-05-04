@@ -2,6 +2,7 @@ package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.random
 
 import android.os.Bundle
 import android.view.*
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,6 +14,7 @@ import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailViewModel
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailViewModelProviderFactory
+import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
 
@@ -22,6 +24,7 @@ class RandomDrinkFragment() : Fragment() {
     private val viewBinding: FragmentDetailBinding get() = _viewBinding!!
     private lateinit var drinkPreview: DrinkPreview
     lateinit var viewModel: DetailViewModel
+    private lateinit var connectionLivedata: ConnectionLiveData
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +38,7 @@ class RandomDrinkFragment() : Fragment() {
 
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
@@ -42,25 +46,40 @@ class RandomDrinkFragment() : Fragment() {
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val detailViewModelFactory = DetailViewModelProviderFactory(repository)
         viewModel = ViewModelProvider(this, detailViewModelFactory).get(DetailViewModel::class.java)
-        viewModel.getRandomDrink()
 
-        viewModel.drinkLiveData.observe(viewLifecycleOwner, { response ->
-            response.data?.let { drink ->
-                bindItemsDetail(drink.drinks[0])
-                drink.drinks[0].apply {
-                    drinkPreview = DrinkPreview(
-                        idDrink.toString(),
-                        strDrink.toString(),
-                        strDrinkThumb
-                    )
+
+        connectionLivedata = ConnectionLiveData(this.requireContext())
+        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+            if (isAvailable) {
+                viewModel.getRandomDrink()
+
+                viewModel.drinkLiveData.observe(viewLifecycleOwner, { response ->
+                    response.data?.let { drink ->
+                        bindItemsDetail(drink.drinks[0])
+                        drink.drinks[0].apply {
+                            drinkPreview = DrinkPreview(
+                                idDrink.toString(),
+                                strDrink.toString(),
+                                strDrinkThumb
+                            )
+                        }
+                    }
+                })
+
+                viewBinding.floatingActionButton.setOnClickListener {
+                    viewModel.saveCocktail(drink = drinkPreview)
+                    Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT).show()
                 }
+            } else {
+                Toast.makeText(
+                    this.requireContext(),
+                    "No Internet Connection Available!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 
-        viewBinding.floatingActionButton.setOnClickListener {
-            viewModel.saveCocktail(drink = drinkPreview)
-            Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT).show()
-        }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -71,11 +90,21 @@ class RandomDrinkFragment() : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.refresh_item -> viewModel.getRandomDrink()
+        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+            if (isAvailable) {
+                when (item.itemId) {
+                    R.id.refresh_item -> viewModel.getRandomDrink()
+                    else -> super.onOptionsItemSelected(item)
+                }
+            } else {
+                Toast.makeText(
+                    this.requireContext(),
+                    "No Internet Connection Available!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
 
-            else -> super.onOptionsItemSelected(item)
-        }
         return true
     }
 

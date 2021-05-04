@@ -15,9 +15,8 @@ class AlcoholicCocktailViewModel(
     val cocktailAlcoholic: MutableLiveData<Resource<CocktailList>> = MutableLiveData()
 
     init {
-        getAlcoholicCocktails()
-    }
 
+    }
     fun getAlcoholicCocktails() = viewModelScope.launch {
             cocktailAlcoholic.postValue(Resource.Loading())
             val response = cockTailRepository.getAllAlcoholicDrinks()

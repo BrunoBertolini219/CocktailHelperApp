@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +18,7 @@ import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.NonAlcoholicCocktailFragmentBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import retrofit2.Response
 
@@ -26,7 +28,7 @@ class NonAlcoholicCocktailFragment : Fragment() {
     private val TAG = "NonAlcoholicCocktail"
     private var _viewBinding: NonAlcoholicCocktailFragmentBinding? = null
     private val viewBinding: NonAlcoholicCocktailFragmentBinding get() = _viewBinding!!
-
+    private lateinit var connectionLivedata: ConnectionLiveData
     private lateinit var viewModel: NonAlcoholicCocktailViewModel
     private lateinit var cocktailListAdapter: CocktailListAdapter
 
@@ -34,6 +36,7 @@ class NonAlcoholicCocktailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        requireActivity().title = "Non-Alcoholic Drinks"
         (activity as AppCompatActivity)
             .supportActionBar?.setDisplayHomeAsUpEnabled(false)
         _viewBinding = NonAlcoholicCocktailFragmentBinding.inflate(inflater, container, false)
@@ -43,13 +46,25 @@ class NonAlcoholicCocktailFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        requireActivity().title = "Non-Alcoholic Drinks"
+
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val viewModelFactory = NonAlcoholicCocktailViewModelProviderFactory(repository)
         viewModel =
             ViewModelProvider(this, viewModelFactory).get(NonAlcoholicCocktailViewModel::class.java)
+
+        connectionLivedata = ConnectionLiveData(this.requireContext())
+        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+            if (isAvailable) {
+                viewModel.getNonAlcoholicCocktails()
+
+                setupObservers()
+            } else {
+                Toast.makeText(this.requireContext(), "No Internet Connection Available!", Toast.LENGTH_SHORT).show()
+            }
+        })
+
+
         setupRecyclerView()
-        setupObservers()
         setupOnClick()
     }
 
@@ -106,6 +121,7 @@ class NonAlcoholicCocktailFragment : Fragment() {
     private fun showProgressBar() {
         viewBinding.paginationProgressBar.visibility = View.VISIBLE
     }
+
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null

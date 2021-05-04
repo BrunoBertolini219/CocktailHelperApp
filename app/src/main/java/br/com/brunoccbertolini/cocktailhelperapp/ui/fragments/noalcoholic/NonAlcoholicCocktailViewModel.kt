@@ -17,7 +17,7 @@ class NonAlcoholicCocktailViewModel(val cocktailRepository: CocktailRepository) 
     val cocktailNoAlcoholic: MutableLiveData<Resource<CocktailList>> get() = _cocktailNoAlcoholic
 
     init {
-        getNonAlcoholicCocktails()
+
     }
 
     fun getNonAlcoholicCocktails() = viewModelScope.launch {

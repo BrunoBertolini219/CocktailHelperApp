@@ -22,4 +22,13 @@
     <style name="Theme.CocktailHelperApp.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.CocktailHelperApp.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="splashScreenTheme" parent="Theme.MaterialComponents.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_image</item>
+        <item name="android:statusBarColor">@color/design_default_color_on_primary</item>
+    </style>
+
 </resources>
+
+
+

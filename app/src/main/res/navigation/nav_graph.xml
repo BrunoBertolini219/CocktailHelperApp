@@ -19,7 +19,11 @@
         tools:layout="@layout/non_alcoholic_cocktail_fragment" >
         <action
             android:id="@+id/action_nonAlcoholicCocktailFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/detailFragment"
@@ -31,10 +35,19 @@
             app:destination="@id/nonAlcoholicCocktailFragment" />
         <action
             android:id="@+id/action_detailFragment_to_alcoholicCocktailFragment"
-            app:destination="@id/alcoholicCocktailFragment" />
+            app:destination="@id/alcoholicCocktailFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left" />
         <argument
             android:name="drink"
             app:argType="br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview" />
+        <action
+            android:id="@+id/action_detailFragment_to_searchCocktailFragment"
+            app:destination="@id/searchCocktailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/searchCocktailFragment"
@@ -43,7 +56,11 @@
         tools:layout="@layout/search_cocktail_fragment" >
         <action
             android:id="@+id/action_searchCocktailFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/savedCocktailFragment"
@@ -52,7 +69,11 @@
         tools:layout="@layout/saved_cocktail_fragment" >
         <action
             android:id="@+id/action_savedCocktailFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/cocktailFragment"
@@ -67,7 +88,11 @@
             app:destination="@id/nonAlcoholicCocktailFragment" />
         <action
             android:id="@+id/action_cocktailFragment_to_detailFragment"
-            app:destination="@id/detailFragment" />
+            app:destination="@id/detailFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/randomDrinkFragment"

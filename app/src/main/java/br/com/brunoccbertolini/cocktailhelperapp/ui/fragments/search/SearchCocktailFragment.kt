@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
@@ -16,8 +17,13 @@ import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.SearchCocktailFragmentBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
+import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
+import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.SEARCH_COCKTAIL_TIME_DELAY
+import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchIngredient
+import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchName
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
@@ -28,8 +34,10 @@ class SearchCocktailFragment : Fragment() {
 
     val TAG = "SearchCocktailFragment"
 
+    private lateinit var connectionLivedata: ConnectionLiveData
     private lateinit var viewModel: SearchCocktailViewModel
     private lateinit var cocktailAdapter: CocktailListAdapter
+    private lateinit var cocktailCategoryListAdapter: CocktailListAdapter
 
     private var _viewBinding: SearchCocktailFragmentBinding? = null
     private val viewBinding: SearchCocktailFragmentBinding get() = _viewBinding!!
@@ -44,6 +52,8 @@ class SearchCocktailFragment : Fragment() {
         return viewBinding.root
     }
 
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         requireActivity().title = "Search Drinks"
@@ -52,27 +62,44 @@ class SearchCocktailFragment : Fragment() {
         viewModel =
             ViewModelProvider(this, searchViewModelFactory).get(SearchCocktailViewModel::class.java)
         setupRecyclerView()
-        setupObservers()
+
+        connectionLivedata = ConnectionLiveData(this.requireContext())
+        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+            if (isAvailable) {
+                setupObservers()
+
+                var job: Job? = null
+                viewBinding.etSearch.addTextChangedListener { editable ->
+                    job?.cancel()
+                    job = MainScope().launch {
+                        delay(SEARCH_COCKTAIL_TIME_DELAY)
+                        editable?.let {
+                            if (editable.toString().isNotEmpty()) {
+                                viewModel.searchCocktail(editable.toString(), searchName)
+                            }
+                        }
+                    }
+                }
+
+            } else {
+                Toast.makeText(
+                    this.requireContext(),
+                    "No Internet Connection Available!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
 
         cocktailAdapter.setOnItemClickListener {
             val bundle = Bundle().apply {
                 putSerializable("drink", it)
             }
-            findNavController().navigate(R.id.action_searchCocktailFragment_to_detailFragment, bundle)
+            findNavController().navigate(
+                R.id.action_searchCocktailFragment_to_detailFragment,
+                bundle
+            )
         }
 
-        var job: Job? = null
-        viewBinding.etSearch.addTextChangedListener { editable ->
-            job?.cancel()
-            job = MainScope().launch {
-                delay(SEARCH_COCKTAIL_TIME_DELAY)
-                editable?.let {
-                    if (editable.toString().isNotEmpty()){
-                        viewModel.searchCocktail(editable.toString())
-                    }
-                }
-            }
-        }
     }
 
     private fun setupObservers() {
@@ -97,7 +124,6 @@ class SearchCocktailFragment : Fragment() {
         })
     }
 
-
     private fun hideProgressBar() {
         viewBinding.paginationProgressBar.visibility = View.INVISIBLE
     }
@@ -114,6 +140,42 @@ class SearchCocktailFragment : Fragment() {
             hasFixedSize()
         }
     }
+
+    private fun mockListSeachIngredients() = listOf<DrinkPreview>(
+
+        DrinkPreview(
+            "1",
+            "Vodka",
+            "https://www.thecocktaildb.com/images/ingredients/vodka.png"
+        ),
+        DrinkPreview(
+            "2",
+            "Gin",
+            "https://www.thecocktaildb.com/images/ingredients/gin.png"
+        ),
+        DrinkPreview(
+            "3",
+            "Tequila",
+            "https://www.thecocktaildb.com/images/ingredients/tequila.png"
+        ),
+        DrinkPreview(
+            "4",
+            "whiskey",
+            "https://www.thecocktaildb.com/images/ingredients/whiskey.png"
+        ),
+        DrinkPreview(
+            "5",
+            "Coffee",
+            "https://www.thecocktaildb.com/images/ingredients/coffee.png"
+        ),
+        DrinkPreview(
+            "6",
+            "Chocolate",
+            "https://www.thecocktaildb.com/images/ingredients/chocolate.png"
+        )
+
+    )
+
     override fun onDestroy() {
         super.onDestroy()
         _viewBinding = null

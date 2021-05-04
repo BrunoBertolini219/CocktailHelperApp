@@ -23,4 +23,7 @@ class CocktailRepository(val db: CocktailDatabase) {
 
     suspend fun searchDrinkByName(searchDrinkName: String) =
         RetrofitInstance.api.searchDrinksByName(searchDrinkName)
+
+    suspend fun searchDrinkByIngredient(searchDrinkIngredient: String) =
+        RetrofitInstance.api.searchDrinksByIngredient(searchDrinkIngredient)
 }

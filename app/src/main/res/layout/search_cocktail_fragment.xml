@@ -11,7 +11,7 @@
         android:id="@+id/etSearch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search..."
+        android:hint="Search Drink/Cocktail..."
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,10 +21,20 @@
         android:id="@+id/rvSearchDrink"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:paddingBottom="50dp"
         android:clipToPadding="false"
+        android:paddingBottom="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etSearch"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvListByCategory"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:paddingBottom="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
         tools:layout_editor_absoluteX="0dp" />
 
     <ProgressBar
@@ -38,5 +48,32 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etSearch">
+
+        <RadioButton
+            android:id="@+id/rb_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusedByDefault="true"
+            android:layout_marginEnd="16dp"
+            android:text="Name" />
+
+        <RadioButton
+            android:id="@+id/rb_Ingredient"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ingredient" />
+    </RadioGroup>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

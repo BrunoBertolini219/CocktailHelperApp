@@ -39,6 +39,14 @@ interface CocktailAPI {
         apiKey: String = API_KEY
     ): Response<CocktailList>
 
+    @GET("api/json/v1/1/filter.php")
+    suspend fun searchDrinksByIngredient(
+        @Query("i")
+        searchDrink: String,
+        @Query("apiKey")
+        apiKey: String = API_KEY
+    ): Response<CocktailList>
+
     @GET("api/json/v1/1/random.php")
     suspend fun getRandomDrink(
         @Query("apiKey")
