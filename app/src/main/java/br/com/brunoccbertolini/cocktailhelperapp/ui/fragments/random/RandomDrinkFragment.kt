@@ -24,32 +24,35 @@ class RandomDrinkFragment() : Fragment() {
     private val viewBinding: FragmentDetailBinding get() = _viewBinding!!
     private lateinit var drinkPreview: DrinkPreview
     lateinit var viewModel: DetailViewModel
-    private lateinit var connectionLivedata: ConnectionLiveData
+    private lateinit var connection: ConnectionLiveData
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
+
+        requireActivity().title = "Drink Suggestion"
+
         (activity as AppCompatActivity)
             .supportActionBar?.setDisplayHomeAsUpEnabled(false)
+
         _viewBinding = FragmentDetailBinding.inflate(inflater, container, false)
         return viewBinding.root
-
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setHasOptionsMenu(true)
-        requireActivity().title = "Drink Suggestion"
+
+        drinkPreview = DrinkPreview("", "", "")
         val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
         val detailViewModelFactory = DetailViewModelProviderFactory(repository)
         viewModel = ViewModelProvider(this, detailViewModelFactory).get(DetailViewModel::class.java)
 
 
-        connectionLivedata = ConnectionLiveData(this.requireContext())
-        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+        connection = ConnectionLiveData(this.requireContext())
+        connection.observe(viewLifecycleOwner, { isAvailable ->
             if (isAvailable) {
                 viewModel.getRandomDrink()
 
@@ -67,8 +70,11 @@ class RandomDrinkFragment() : Fragment() {
                 })
 
                 viewBinding.floatingActionButton.setOnClickListener {
-                    viewModel.saveCocktail(drink = drinkPreview)
-                    Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT).show()
+                    if (drinkPreview.strDrink.isNotBlank()) {
+                        viewModel.saveCocktail(drink = drinkPreview)
+                        Snackbar.make(view, "Drink saved successfully", Snackbar.LENGTH_SHORT)
+                            .show()
+                    }
                 }
             } else {
                 Toast.makeText(
@@ -90,7 +96,7 @@ class RandomDrinkFragment() : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
+        connection.observe(viewLifecycleOwner, { isAvailable ->
             if (isAvailable) {
                 when (item.itemId) {
                     R.id.refresh_item -> viewModel.getRandomDrink()

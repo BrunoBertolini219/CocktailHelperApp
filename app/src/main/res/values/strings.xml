@@ -1,8 +1,21 @@
 <resources>
-    <string name="app_name">DrinksHelper App</string>
+    <string name="app_name">Smoothies, Drinks &amp; Cocktails Recipes - Free Ads</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_drinks_container">DrinksContainerActivity</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+    <string name="delete_drink">Delete Drink</string>
+    <string name="drink_image">Drink Image</string>
+    <string name="add_to_favorite_list">Add to Favorite List</string>
+    <string name="instructions">Instructions</string>
+    <string name="ingredients">Ingredients</string>
+    <string name="title">Title</string>
+    <string name="drink_name">drink name</string>
+    <string name="drink_s_list">Drink\'s List</string>
+    <string name="drinks">Drinks</string>
+    <string name="search">Search</string>
+    <string name="favorites">Favorites</string>
+    <string name="suggested_drink">Suggested Drink</string>
+    <string name="refresh">Refresh</string>
 </resources>

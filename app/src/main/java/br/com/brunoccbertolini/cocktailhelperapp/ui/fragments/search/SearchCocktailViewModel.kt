@@ -1,6 +1,5 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.search
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -22,7 +21,7 @@ class SearchCocktailViewModel(val repository: CocktailRepository): ViewModel() {
 
     fun searchCocktail(searchQuery: String, searchType: String) = viewModelScope.launch {
         searchCocktail.postValue(Resource.Loading())
-        var response = if (searchType == searchName) {
+        val response = if (searchType == searchName) {
             repository.searchDrinkByName(searchQuery)
         } else {
             repository.searchDrinkByIngredient(searchQuery)

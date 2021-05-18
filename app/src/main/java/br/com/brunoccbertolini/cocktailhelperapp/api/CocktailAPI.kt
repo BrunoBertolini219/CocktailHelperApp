@@ -1,12 +1,10 @@
 package br.com.brunoccbertolini.cocktailhelperapp.api
 
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
-import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.API_KEY
 import retrofit2.Response
 import retrofit2.http.GET
-import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CocktailAPI {

@@ -1,18 +1,16 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.noalcoholic
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-
-import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.NonAlcoholicCocktailFragmentBinding
@@ -20,7 +18,6 @@ import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
-import retrofit2.Response
 
 
 class NonAlcoholicCocktailFragment : Fragment() {
@@ -35,7 +32,7 @@ class NonAlcoholicCocktailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         requireActivity().title = "Non-Alcoholic Drinks"
         (activity as AppCompatActivity)
             .supportActionBar?.setDisplayHomeAsUpEnabled(false)
@@ -59,7 +56,11 @@ class NonAlcoholicCocktailFragment : Fragment() {
 
                 setupObservers()
             } else {
-                Toast.makeText(this.requireContext(), "No Internet Connection Available!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this.requireContext(),
+                    "No Internet Connection Available!",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         })
 

@@ -4,23 +4,23 @@
     <item
         android:id="@+id/cocktailFragment"
         android:icon="@drawable/ic_drink"
-        android:title="Drinks"
+        android:title="@string/drinks"
         />
 
     <item
         android:id="@+id/searchCocktailFragment"
         android:icon="@drawable/ic_search"
-        android:title="Search"/>
+        android:title="@string/search"/>
 
     <item
         android:id="@+id/savedCocktailFragment"
         android:icon="@drawable/ic_favorite"
-        android:title="Favorites"
+        android:title="@string/favorites"
         />
 
     <item
         android:id="@+id/randomDrinkFragment"
         android:icon="@drawable/ic_random"
-        android:title="Suggested Drink"/>
+        android:title="@string/suggested_drink"/>
 
 </menu>

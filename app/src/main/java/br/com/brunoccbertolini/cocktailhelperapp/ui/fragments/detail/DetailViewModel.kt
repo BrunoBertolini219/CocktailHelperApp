@@ -3,13 +3,10 @@ package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
-
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
-
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
@@ -17,9 +14,6 @@ class DetailViewModel(
     val repository: CocktailRepository
 ): ViewModel() {
     val drinkLiveData = MutableLiveData<Resource<DrinkList>>()
-
-    init {
-    }
 
     fun getDrinkDetail(id: String)  = viewModelScope.launch {
         drinkLiveData.postValue(Resource.Loading())

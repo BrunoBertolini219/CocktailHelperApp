@@ -37,7 +37,8 @@
                 android:scaleType="centerCrop"
                 android:layout_height="120dp"
                 app:layout_constraintCircleRadius="8dp"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@tools:sample/avatars"
+                android:contentDescription="@string/drink_image" />
 
         </androidx.cardview.widget.CardView>
 

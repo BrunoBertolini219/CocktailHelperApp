@@ -25,14 +25,12 @@ class SavedCocktailAdapter : RecyclerView.Adapter<SavedCocktailAdapter.ViewHolde
         }
     }
 
-
     val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = SavedItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(view)
     }
-
 
     override fun getItemCount(): Int = differ.currentList.size
 
@@ -48,7 +46,6 @@ class SavedCocktailAdapter : RecyclerView.Adapter<SavedCocktailAdapter.ViewHolde
         private val drinkImage: ImageView = view.ivDrinkImg
         private val drinkTittle = view.tvDrinkTitle
         private val drinkDelete = view.ivDrinkDelete
-        // private val drinkStyle = view.tvDrinkStyle
 
         fun bindView(drink: DrinkPreview) {
             drink.apply {

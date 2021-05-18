@@ -37,7 +37,8 @@
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
                 app:layout_constraintCircleRadius="8dp"
-                tools:src="@tools:sample/avatars" />
+                tools:src="@tools:sample/avatars"
+                android:contentDescription="@string/drink_image" />
 
         </androidx.cardview.widget.CardView>
 
@@ -51,6 +52,7 @@
             android:textAlignment="textStart"
             android:textAppearance="?attr/textAppearanceListItem"
             android:textColor="@color/white"
+            android:hint="@string/drink_name"
             android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/iv_drink_delete"
             app:layout_constraintStart_toEndOf="@+id/card_view_image"
@@ -67,6 +69,7 @@
             android:focusable="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_delete"
+            android:contentDescription="@string/delete_drink"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_delete" />

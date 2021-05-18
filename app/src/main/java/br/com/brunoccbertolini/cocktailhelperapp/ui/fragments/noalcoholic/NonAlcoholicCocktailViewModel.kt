@@ -8,7 +8,6 @@ import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.launch
 import retrofit2.Response
-import java.lang.Exception
 
 
 class NonAlcoholicCocktailViewModel(val cocktailRepository: CocktailRepository) : ViewModel() {

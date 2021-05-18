@@ -1,28 +1,25 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.search
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.SearchCocktailFragmentBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
-import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.SEARCH_COCKTAIL_TIME_DELAY
-import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchIngredient
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchName
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.Job
@@ -45,13 +42,12 @@ class SearchCocktailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         (activity as AppCompatActivity)
             .supportActionBar?.setDisplayHomeAsUpEnabled(false)
         _viewBinding = SearchCocktailFragmentBinding.inflate(inflater, container, false)
         return viewBinding.root
     }
-
 
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -140,41 +136,6 @@ class SearchCocktailFragment : Fragment() {
             hasFixedSize()
         }
     }
-
-    private fun mockListSeachIngredients() = listOf<DrinkPreview>(
-
-        DrinkPreview(
-            "1",
-            "Vodka",
-            "https://www.thecocktaildb.com/images/ingredients/vodka.png"
-        ),
-        DrinkPreview(
-            "2",
-            "Gin",
-            "https://www.thecocktaildb.com/images/ingredients/gin.png"
-        ),
-        DrinkPreview(
-            "3",
-            "Tequila",
-            "https://www.thecocktaildb.com/images/ingredients/tequila.png"
-        ),
-        DrinkPreview(
-            "4",
-            "whiskey",
-            "https://www.thecocktaildb.com/images/ingredients/whiskey.png"
-        ),
-        DrinkPreview(
-            "5",
-            "Coffee",
-            "https://www.thecocktaildb.com/images/ingredients/coffee.png"
-        ),
-        DrinkPreview(
-            "6",
-            "Chocolate",
-            "https://www.thecocktaildb.com/images/ingredients/chocolate.png"
-        )
-
-    )
 
     override fun onDestroy() {
         super.onDestroy()

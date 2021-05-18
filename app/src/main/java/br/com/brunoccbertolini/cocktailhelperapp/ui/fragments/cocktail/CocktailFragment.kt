@@ -1,21 +1,16 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.cocktail
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentCocktailBinding
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailFragment
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.noalcoholic.NonAlcoholicCocktailFragment
-
 import com.google.android.material.tabs.TabLayoutMediator
 
 class CocktailFragment : Fragment() {
@@ -26,10 +21,9 @@ class CocktailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _viewBinding = FragmentCocktailBinding.inflate(inflater, container, false)
         return viewBinding.root
-
 
     }
 
@@ -39,26 +33,25 @@ class CocktailFragment : Fragment() {
 
         view.findViewById<ViewPager2>(R.id.viewPager).adapter = FragmentTypeAdapter(this)
 
-        TabLayoutMediator(view.findViewById(R.id.tabs), view.findViewById(R.id.viewPager)) { tab, position ->
+        TabLayoutMediator(
+            view.findViewById(R.id.tabs),
+            view.findViewById(R.id.viewPager)
+        ) { tab, position ->
             tab.text = listTab[position]
         }.attach()
     }
 
-    class FragmentTypeAdapter(fragment: Fragment): FragmentStateAdapter(fragment){
+    class FragmentTypeAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
         override fun getItemCount(): Int {
             return 2
         }
 
         override fun createFragment(position: Int): Fragment {
-            if (position == 0){
+            if (position == 0) {
                 return AlcoholicCocktailFragment()
-            }else {
+            } else {
                 return NonAlcoholicCocktailFragment()
             }
-
         }
-
-
     }
-
 }

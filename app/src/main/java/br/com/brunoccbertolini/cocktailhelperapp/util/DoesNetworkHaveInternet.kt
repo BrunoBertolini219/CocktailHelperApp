@@ -2,11 +2,9 @@ package br.com.brunoccbertolini.cocktailhelperapp.util
 
 import android.content.ContentValues.TAG
 import android.util.Log
-import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import java.io.IOException
 import java.net.InetSocketAddress
 import java.net.Socket
-import javax.security.auth.login.LoginException
 
 object DoesNetworkHaveInternet {
 

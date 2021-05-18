@@ -1,13 +1,13 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.favorites
 
 import android.app.AlertDialog
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import br.com.brunoccbertolini.cocktailhelperapp.R
@@ -27,7 +27,7 @@ class SavedCocktailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         (activity as AppCompatActivity)
             .supportActionBar?.setDisplayHomeAsUpEnabled(false)
         _viewBinding = SavedCocktailFragmentBinding.inflate(inflater, container, false)
@@ -51,11 +51,10 @@ class SavedCocktailFragment : Fragment() {
                 setPositiveButton("Remove") { char, dialog ->
                     viewModel.deleteSavedCocktail(drink)
                 }
-                setNegativeButton("Cancel") {text, listener ->
+                setNegativeButton("Cancel") { text, listener ->
                     text.cancel()
                 }
             }.show()
-
 
 
         }
@@ -64,11 +63,11 @@ class SavedCocktailFragment : Fragment() {
             val bundle = Bundle().apply {
                 putSerializable("drink", it)
             }
-            findNavController().navigate(R.id.action_savedCocktailFragment_to_detailFragment, bundle)
+            findNavController().navigate(
+                R.id.action_savedCocktailFragment_to_detailFragment,
+                bundle
+            )
         }
-
-
-
 
 
     }

@@ -1,14 +1,12 @@
 package br.com.brunoccbertolini.cocktailhelperapp.adapter
 
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.CocktailItemBinding
-
-import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import com.bumptech.glide.Glide
 
@@ -40,12 +38,9 @@ class CocktailListAdapter : RecyclerView.Adapter<CocktailListAdapter.ViewHolder>
 
     private var onItemClickListener: ((DrinkPreview) -> Unit)? = null
 
-
     inner class ViewHolder(view: CocktailItemBinding) : RecyclerView.ViewHolder(view.root) {
         private val drinkImage: ImageView = view.ivDrinkImg
         private val drinkTittle = view.tvDrinkTitle
-        //private val drinkAlcool = view.tvDrinkAlcoholic
-        // private val drinkStyle = view.tvDrinkStyle
 
         fun bindView(drink: DrinkPreview) {
             drink.apply {

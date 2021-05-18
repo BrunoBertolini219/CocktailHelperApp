@@ -1,13 +1,12 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.view.inputmethod.InputMethodManager
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,6 @@ import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentDetailBindi
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
-import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailFragment
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import com.bumptech.glide.Glide
@@ -39,7 +37,7 @@ class DetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         requireActivity().title = "Drink Recipe"
 
         (activity as AppCompatActivity).supportActionBar?.let {
@@ -53,17 +51,6 @@ class DetailFragment : Fragment() {
         return viewBinding.root
 
     }
-
-//    private fun setreturnBack(): Boolean {
-//        val imn = requireActivity()
-//            .getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-//        imn.hideSoftInputFromWindow(viewBinding.root.windowToken, 0)
-//
-//        val action = R.id.action_detailFragment_to_alcoholicCocktailFragment
-//        findNavController().navigate(action)
-//        return true
-//    }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
