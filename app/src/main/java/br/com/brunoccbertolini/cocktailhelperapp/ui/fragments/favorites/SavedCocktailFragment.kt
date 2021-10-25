@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,11 +15,13 @@ import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.SavedCocktailAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.SavedCocktailFragmentBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SavedCocktailFragment : Fragment() {
 
-    private lateinit var viewModel: SavedCocktailViewModel
+    private val viewModel: SavedCocktailViewModel by viewModels()
     lateinit var adapterCocktail: SavedCocktailAdapter
 
     private var _viewBinding: SavedCocktailFragmentBinding? = null
@@ -38,9 +41,7 @@ class SavedCocktailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         requireActivity().title = "Favorite Drinks"
-        val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
-        val savedFactory = SavedCocktailViewModelProviderFactory(repository)
-        viewModel = ViewModelProvider(this, savedFactory).get(SavedCocktailViewModel::class.java)
+
         setupRecyclerView()
         setupObservers()
 

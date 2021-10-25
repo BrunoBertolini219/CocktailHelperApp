@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -16,14 +17,17 @@ import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentDetailBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
+import br.com.brunoccbertolini.cocktailhelperapp.util.Event
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlin.text.Typography.bullet
 
 
+@AndroidEntryPoint
 class DetailFragment : Fragment() {
 
     private val TAG = "DetailFragment"
@@ -31,7 +35,7 @@ class DetailFragment : Fragment() {
     private val viewBinding: FragmentDetailBinding get() = _viewBinding!!
 
     private lateinit var connectionLivedata: ConnectionLiveData
-    private lateinit var viewModel: DetailViewModel
+    private val viewModel: DetailViewModel by viewModels()
 
     val args: DetailFragmentArgs by navArgs()
     override fun onCreateView(
@@ -55,10 +59,7 @@ class DetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val drink = args.drink
-        val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
-        val viewModelFactory = DetailViewModelProviderFactory(repository)
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(DetailViewModel::class.java)
+
         connectionLivedata = ConnectionLiveData(this.requireContext())
         connectionLivedata.observe(viewLifecycleOwner, { isAvailable ->
             if (isAvailable) {
@@ -85,7 +86,8 @@ class DetailFragment : Fragment() {
     }
 
     private fun setupDetailSearch() {
-        viewModel.drinkLiveData.observe(viewLifecycleOwner, { response ->
+        viewModel.drinkLiveData.observe(viewLifecycleOwner, { eventResponse ->
+            val response = eventResponse.peekContent()
             when (response) {
                 is Resource.Success -> {
                     hideProgressBar()

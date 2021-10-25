@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -15,19 +16,23 @@ import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentAlcoholicCocktailBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class AlcoholicCocktailFragment : Fragment() {
 
 
     private var _viewBinding: FragmentAlcoholicCocktailBinding? = null
     private val viewBinding: FragmentAlcoholicCocktailBinding get() = _viewBinding!!
 
+    private val viewModelAlcoholic: AlcoholicCocktailViewModel by viewModels()
+
     private lateinit var connectionLiveData: ConnectionLiveData
-    private lateinit var viewModelAlcoholic: AlcoholicCocktailViewModel
     private lateinit var adapterCocktail: CocktailListAdapter
 
     val TAG = "CocktailFragment"
@@ -45,11 +50,6 @@ class AlcoholicCocktailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val cockTailRepository = CocktailRepository(CocktailDatabase(this.requireContext()))
-        val viewModelProviderFactory = AlcoholicCocktailViewModelProviderFactory(cockTailRepository)
-        viewModelAlcoholic = ViewModelProvider(this, viewModelProviderFactory).get(
-            AlcoholicCocktailViewModel::class.java
-        )
 
         connectionLiveData = ConnectionLiveData(this.requireContext())
         connectionLiveData.observe(viewLifecycleOwner, { isAvailable ->

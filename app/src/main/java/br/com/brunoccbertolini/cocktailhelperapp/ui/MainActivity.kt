@@ -8,7 +8,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupWithNavController
 import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
+import java.lang.RuntimeException
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var viewBinding: ActivityMainBinding
 
@@ -17,6 +20,8 @@ class MainActivity : AppCompatActivity() {
         setTheme(R.style.Theme_CocktailHelperApp)
         viewBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(viewBinding.root)
+
+      
 
         val newNavHostFragment =
             supportFragmentManager.findFragmentById(R.id.drinksNavHostFragment) as NavHostFragment
