@@ -6,5 +6,6 @@ class Constrants {
         const val BASE_URL = "https://www.thecocktaildb.com/"
         const val SEARCH_COCKTAIL_TIME_DELAY = 500L
         const val searchName = "name"
+        const val DATABASE_NAME = "cocktail_db"
     }
 }

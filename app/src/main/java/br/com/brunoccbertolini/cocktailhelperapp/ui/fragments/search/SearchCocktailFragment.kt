@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
@@ -16,25 +17,25 @@ import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.SearchCocktailFragmentBinding
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
-import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.SEARCH_COCKTAIL_TIME_DELAY
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchName
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class SearchCocktailFragment : Fragment() {
 
     val TAG = "SearchCocktailFragment"
 
     private lateinit var connectionLivedata: ConnectionLiveData
-    private lateinit var viewModel: SearchCocktailViewModel
+    private val viewModel: SearchCocktailViewModel by viewModels()
     private lateinit var cocktailAdapter: CocktailListAdapter
-    private lateinit var cocktailCategoryListAdapter: CocktailListAdapter
 
     private var _viewBinding: SearchCocktailFragmentBinding? = null
     private val viewBinding: SearchCocktailFragmentBinding get() = _viewBinding!!
@@ -53,10 +54,6 @@ class SearchCocktailFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         requireActivity().title = "Search Drinks"
-        val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
-        val searchViewModelFactory = SearchProviderViewModelFactory(repository)
-        viewModel =
-            ViewModelProvider(this, searchViewModelFactory).get(SearchCocktailViewModel::class.java)
         setupRecyclerView()
 
         connectionLivedata = ConnectionLiveData(this.requireContext())

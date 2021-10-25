@@ -5,25 +5,24 @@ import android.view.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentDetailBinding
-import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
 import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailViewModel
-import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailViewModelProviderFactory
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import com.bumptech.glide.Glide
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RandomDrinkFragment() : Fragment() {
 
     private var _viewBinding: FragmentDetailBinding? = null
     private val viewBinding: FragmentDetailBinding get() = _viewBinding!!
     private lateinit var drinkPreview: DrinkPreview
-    lateinit var viewModel: DetailViewModel
+    private val viewModel: DetailViewModel by viewModels()
     private lateinit var connection: ConnectionLiveData
 
     override fun onCreateView(
@@ -46,9 +45,7 @@ class RandomDrinkFragment() : Fragment() {
         setHasOptionsMenu(true)
 
         drinkPreview = DrinkPreview("", "", "")
-        val repository = CocktailRepository(CocktailDatabase(this.requireContext()))
-        val detailViewModelFactory = DetailViewModelProviderFactory(repository)
-        viewModel = ViewModelProvider(this, detailViewModelFactory).get(DetailViewModel::class.java)
+
 
 
         connection = ConnectionLiveData(this.requireContext())
@@ -57,7 +54,7 @@ class RandomDrinkFragment() : Fragment() {
                 viewModel.getRandomDrink()
 
                 viewModel.drinkLiveData.observe(viewLifecycleOwner, { response ->
-                    response.data?.let { drink ->
+                    response.peekContent().data?.let { drink ->
                         bindItemsDetail(drink.drinks[0])
                         drink.drinks[0].apply {
                             drinkPreview = DrinkPreview(

@@ -4,28 +4,24 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class AlcoholicCocktailViewModel(
-    val cockTailRepository: CocktailRepository
+@HiltViewModel
+class AlcoholicCocktailViewModel @Inject constructor(
+    private val cockTailRepository: CocktailRepository
 ) : ViewModel() {
     val cocktailAlcoholic: MutableLiveData<Resource<CocktailList>> = MutableLiveData()
 
     fun getAlcoholicCocktails() = viewModelScope.launch {
             cocktailAlcoholic.postValue(Resource.Loading())
             val response = cockTailRepository.getAllAlcoholicDrinks()
-            cocktailAlcoholic.postValue(handleAlcoholicCocktailResponse(response))
+            cocktailAlcoholic.postValue(response)
         }
 
-    private fun handleAlcoholicCocktailResponse(response: Response<CocktailList>): Resource<CocktailList> {
-        if (response.isSuccessful) {
-            response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
-            }
-        }
-        return Resource.Error(response.message())
-    }
+
 }

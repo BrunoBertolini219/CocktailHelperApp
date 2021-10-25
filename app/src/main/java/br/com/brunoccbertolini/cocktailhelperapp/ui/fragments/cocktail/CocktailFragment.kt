@@ -12,7 +12,9 @@ import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentCocktailBin
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailFragment
 import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.noalcoholic.NonAlcoholicCocktailFragment
 import com.google.android.material.tabs.TabLayoutMediator
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CocktailFragment : Fragment() {
 
     var _viewBinding: FragmentCocktailBinding? = null

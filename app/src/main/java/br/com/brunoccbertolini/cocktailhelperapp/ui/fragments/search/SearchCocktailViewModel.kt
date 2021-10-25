@@ -4,20 +4,19 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchName
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-
-class SearchCocktailViewModel(val repository: CocktailRepository): ViewModel() {
+@HiltViewModel
+class SearchCocktailViewModel @Inject constructor(
+    private val repository: CocktailRepository
+) : ViewModel() {
     var searchCocktail: MutableLiveData<Resource<CocktailList>> = MutableLiveData()
-
-
-    init {
-
-    }
 
     fun searchCocktail(searchQuery: String, searchType: String) = viewModelScope.launch {
         searchCocktail.postValue(Resource.Loading())
@@ -26,15 +25,6 @@ class SearchCocktailViewModel(val repository: CocktailRepository): ViewModel() {
         } else {
             repository.searchDrinkByIngredient(searchQuery)
         }
-        searchCocktail.postValue(handleCocktailResponse(response))
-    }
-
-    private fun handleCocktailResponse(response: Response<CocktailList>): Resource<CocktailList> {
-        if (response.isSuccessful) {
-            response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
-            }
-        }
-        return Resource.Error(response.message())
+        searchCocktail.postValue(response)
     }
 }

@@ -1,33 +1,30 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
-import br.com.brunoccbertolini.cocktailhelperapp.repository.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
+import br.com.brunoccbertolini.cocktailhelperapp.util.Event
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import retrofit2.Response
+import javax.inject.Inject
 
-class DetailViewModel(
-    val repository: CocktailRepository
-): ViewModel() {
-    val drinkLiveData = MutableLiveData<Resource<DrinkList>>()
+@HiltViewModel
+class DetailViewModel @Inject constructor(
+    private val repository: CocktailRepository
+) : ViewModel() {
+    private val _drinkLiveData = MutableLiveData<Event<Resource<DrinkList>>>()
+    val drinkLiveData: LiveData<Event<Resource<DrinkList>>> get() = _drinkLiveData
 
-    fun getDrinkDetail(id: String)  = viewModelScope.launch {
-        drinkLiveData.postValue(Resource.Loading())
+    fun getDrinkDetail(id: String) = viewModelScope.launch {
+        _drinkLiveData.postValue(Event(Resource.Loading()))
         val response = repository.searchDrinkById(id)
-        drinkLiveData.postValue(handleSearchCocktailResponse(response))
-    }
-
-    private fun handleSearchCocktailResponse(response: Response<DrinkList>):Resource<DrinkList> {
-        if (response.isSuccessful) {
-            response.body()?.let { resultResponse ->
-                return Resource.Success(resultResponse)
-            }
-        }
-        return Resource.Error(response.message())
+        _drinkLiveData.postValue(Event(response))
     }
 
     fun saveCocktail(drink: DrinkPreview) = viewModelScope.launch {
@@ -35,9 +32,9 @@ class DetailViewModel(
     }
 
     fun getRandomDrink() = viewModelScope.launch {
-        drinkLiveData.postValue(Resource.Loading())
+        _drinkLiveData.postValue(Event(Resource.Loading()))
         val response = repository.randomDrink()
-        drinkLiveData.postValue(handleSearchCocktailResponse(response))
+        _drinkLiveData.postValue(Event(response))
     }
 
 }
