@@ -60,6 +60,4 @@ data class Drink(
     var strMeasure9: String?,
     var strTags: String?,
     var strVideo: Any?
-) {
-
-}
+)

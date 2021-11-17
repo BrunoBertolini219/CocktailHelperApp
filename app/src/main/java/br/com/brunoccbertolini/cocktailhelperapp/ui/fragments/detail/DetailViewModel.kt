@@ -11,7 +11,6 @@ import br.com.brunoccbertolini.cocktailhelperapp.util.Event
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,6 +20,9 @@ class DetailViewModel @Inject constructor(
     private val _drinkLiveData = MutableLiveData<Event<Resource<DrinkList>>>()
     val drinkLiveData: LiveData<Event<Resource<DrinkList>>> get() = _drinkLiveData
 
+    private var _drinkPreviewLiveData = MutableLiveData<Event<Resource<DrinkPreview>>>()
+    val drinkPreviewLiveData: LiveData<Event<Resource<DrinkPreview>>> get() = _drinkPreviewLiveData
+
     fun getDrinkDetail(id: String) = viewModelScope.launch {
         _drinkLiveData.postValue(Event(Resource.Loading()))
         val response = repository.searchDrinkById(id)
@@ -28,7 +30,12 @@ class DetailViewModel @Inject constructor(
     }
 
     fun saveCocktail(drink: DrinkPreview) = viewModelScope.launch {
-        repository.upsert(drink)
+        if (drink.strDrink.isNullOrEmpty() || drink.strDrinkThumb.isNullOrEmpty()) {
+            _drinkPreviewLiveData.postValue(Event(Resource.Error("ERROR")))
+        } else {
+            repository.upsert(drink)
+            _drinkPreviewLiveData.postValue(Event(Resource.Success(drink)))
+        }
     }
 
     fun getRandomDrink() = viewModelScope.launch {

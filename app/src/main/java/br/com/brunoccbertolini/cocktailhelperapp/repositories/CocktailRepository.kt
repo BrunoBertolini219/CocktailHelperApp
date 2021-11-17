@@ -2,11 +2,9 @@ package br.com.brunoccbertolini.cocktailhelperapp.repositories
 
 import androidx.lifecycle.LiveData
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
-import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
-import retrofit2.Response
 
 interface CocktailRepository {
 

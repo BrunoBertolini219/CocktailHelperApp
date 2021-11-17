@@ -17,7 +17,7 @@ import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class RandomDrinkFragment() : Fragment() {
+class RandomDrinkFragment : Fragment() {
 
     private var _viewBinding: FragmentDetailBinding? = null
     private val viewBinding: FragmentDetailBinding get() = _viewBinding!!
