@@ -1,9 +1,7 @@
 package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic
 
-import org.junit.Assert.*
-import org.junit.Before
 import br.com.brunoccbertolini.cocktailhelperapp.repositories.FakeCocktailRepository
-import org.junit.Test
+import org.junit.Before
 
 class AlcoholicCocktailViewModelTest {
 

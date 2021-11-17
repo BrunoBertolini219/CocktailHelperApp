@@ -57,8 +57,12 @@ class FakeCocktailRepository : CocktailRepository {
     }
 
     override suspend fun upsert(drink: DrinkPreview) {
-        cocktailsList.add(drink)
-        refreshLiveData()
+        if(drink.strDrink.isEmpty() || drink.strDrinkThumb.isNullOrEmpty()){
+            Resource.Error("ERROR", null)
+        }else {
+            cocktailsList.add(drink)
+            refreshLiveData()
+        }
     }
 
     private fun checkResourceCocktailWorks(): Resource<CocktailList> {
