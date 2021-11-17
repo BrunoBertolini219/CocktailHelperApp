@@ -3,7 +3,10 @@ package br.com.brunoccbertolini.cocktailhelperapp.db
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
 import br.com.brunoccbertolini.cocktailhelperapp.getOrAwaitValue
+import br.com.brunoccbertolini.cocktailhelperapp.launcheFragmentInHiltContainer
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
+import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.cocktail.CocktailFragment
+import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailFragment
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,6 +47,13 @@ class CocktailDaoTest {
     @After
     fun teardown() {
         database.close()
+    }
+
+    @Test
+    fun testLaunchFragmentInHintContainer(){
+        launcheFragmentInHiltContainer<DetailFragment> {
+
+        }
     }
 
     @Test
