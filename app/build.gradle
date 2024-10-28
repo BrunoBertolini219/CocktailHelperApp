@@ -15,9 +15,9 @@ android {
     defaultConfig {
         applicationId "br.com.brunoccbertolini.cocktailhelperapp"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 34
         versionCode 4
-        versionName "1.1"
+        versionName "1.5"
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "br.com.brunoccbertolini.cocktailhelperapp.HiltTestRunner"
     }
