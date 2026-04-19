@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.search
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.search
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

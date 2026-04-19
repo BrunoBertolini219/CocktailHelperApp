@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.noalcoholic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,14 +15,14 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AlcoholicCocktailViewModel @Inject constructor(
-    private val cockTailRepository: CocktailRepository
+class NonAlcoholicCocktailViewModel @Inject constructor(
+    private val cocktailRepository: CocktailRepository
 ) : ViewModel() {
 
     private val _networkError = MutableStateFlow<String?>(null)
 
-    val cocktailAlcoholic: StateFlow<Resource<CocktailList>> = combine(
-        cockTailRepository.getCachedAlcoholicDrinks(), _networkError
+    val cocktailNoAlcoholic: StateFlow<Resource<CocktailList>> = combine(
+        cocktailRepository.getCachedNonAlcoholicDrinks(), _networkError
     ) { cached, error ->
         when {
             cached.isNotEmpty() -> Resource.Success(CocktailList(cached))
@@ -37,7 +37,7 @@ class AlcoholicCocktailViewModel @Inject constructor(
 
     fun refresh() = viewModelScope.launch {
         _networkError.value = null
-        val result = cockTailRepository.getAllAlcoholicDrinks()
+        val result = cocktailRepository.getAllNoAlcoholicDrinks()
         if (result is Resource.Error) _networkError.value = result.message
     }
 }

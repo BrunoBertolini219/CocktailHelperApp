@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import br.com.brunoccbertolini.cocktailhelperapp.R
 
 @Composable
 fun ErrorContent(message: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
@@ -22,6 +24,6 @@ fun ErrorContent(message: String, onRetry: () -> Unit, modifier: Modifier = Modi
     ) {
         Text(text = message, style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = onRetry) { Text("Retry") }
+        Button(onClick = onRetry) { Text(stringResource(R.string.retry)) }
     }
 }

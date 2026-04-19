@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.screens
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.alcoholic
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,15 +18,16 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.DrinkCard
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.ErrorContent
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.LoadingContent
-import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic.AlcoholicCocktailViewModel
-import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.noalcoholic.NonAlcoholicCocktailViewModel
+import br.com.brunoccbertolini.cocktailhelperapp.ui.pages.noalcoholic.NonAlcoholicCocktailViewModel
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,7 +43,7 @@ fun CocktailListScreen(
     val nonAlcoholicState by nonAlcoholicVm.cocktailNoAlcoholic.collectAsStateWithLifecycle()
 
     var selectedTab by remember { mutableIntStateOf(0) }
-    val tabs = listOf("Alcoholic", "Non-Alcoholic")
+    val tabs = listOf(stringResource(R.string.alcoholic), stringResource(R.string.non_alcoholic))
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScrollableTabRow(selectedTabIndex = selectedTab) {
@@ -63,7 +64,7 @@ fun CocktailListScreen(
         when (currentState) {
             is Resource.Loading -> LoadingContent()
             is Resource.Error -> ErrorContent(
-                message = currentState.message ?: "An error occurred",
+                message = currentState.message ?: stringResource(R.string.error_occurred),
                 onRetry = onRefresh
             )
             is Resource.Success -> {

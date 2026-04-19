@@ -1,10 +1,9 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.detail
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import br.com.brunoccbertolini.cocktailhelperapp.MainCoroutineRule
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.repositories.FakeCocktailRepository
-import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
 import org.junit.Before

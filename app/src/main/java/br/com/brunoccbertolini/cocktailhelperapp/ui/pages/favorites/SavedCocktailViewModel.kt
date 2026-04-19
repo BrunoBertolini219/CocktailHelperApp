@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.favorites
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.favorites
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

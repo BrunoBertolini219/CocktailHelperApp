@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.alcoholic
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.alcoholic
 
 import br.com.brunoccbertolini.cocktailhelperapp.repositories.FakeCocktailRepository
 import org.junit.Before

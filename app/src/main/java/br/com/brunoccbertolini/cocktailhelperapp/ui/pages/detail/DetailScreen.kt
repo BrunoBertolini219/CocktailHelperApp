@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.screens
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.detail
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -28,14 +28,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.model.Drink
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.ErrorContent
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.LoadingContent
-import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.detail.DetailViewModel
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import coil3.compose.AsyncImage
 
@@ -53,6 +54,9 @@ fun DetailScreen(
     val saveState by viewModel.drinkPreviewState.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
 
+    val savedMsg = stringResource(R.string.saved_message)
+    val errorSavingMsg = stringResource(R.string.error_saving)
+
     LaunchedEffect(idDrink) {
         viewModel.getDrinkDetail(idDrink)
     }
@@ -60,7 +64,7 @@ fun DetailScreen(
     LaunchedEffect(saveState) {
         val event = saveState?.getContentIfNotHandled()
         if (event != null) {
-            val msg = if (event is Resource.Success) "Saved!" else event.message ?: "Error saving"
+            val msg = if (event is Resource.Success) savedMsg else event.message ?: errorSavingMsg
             snackbarHostState.showSnackbar(msg)
         }
     }
@@ -72,7 +76,7 @@ fun DetailScreen(
                 title = { Text(strDrink) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back))
                     }
                 }
             )
@@ -82,7 +86,7 @@ fun DetailScreen(
                 FloatingActionButton(onClick = {
                     viewModel.saveCocktail(DrinkPreview(idDrink, strDrink, strDrinkThumb))
                 }) {
-                    Icon(Icons.Filled.Favorite, contentDescription = "Save to favorites")
+                    Icon(Icons.Filled.Favorite, contentDescription = stringResource(R.string.save_to_favorites))
                 }
             }
         }
@@ -90,7 +94,7 @@ fun DetailScreen(
         when (drinkState) {
             is Resource.Loading -> LoadingContent(modifier = Modifier.padding(innerPadding))
             is Resource.Error -> ErrorContent(
-                message = (drinkState as Resource.Error).message ?: "An error occurred",
+                message = (drinkState as Resource.Error).message ?: stringResource(R.string.error_occurred),
                 onRetry = { viewModel.getDrinkDetail(idDrink) },
                 modifier = Modifier.padding(innerPadding)
             )
@@ -141,7 +145,7 @@ private fun DrinkDetail(drink: Drink, modifier: Modifier = Modifier) {
             )
 
             if (ingredients.isNotEmpty()) {
-                Text("Ingredients", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.ingredients), style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 ingredients.forEachIndexed { index, ingredient ->
                     val measure = measures.getOrNull(index)?.takeIf { it.isNotBlank() } ?: ""
@@ -151,7 +155,7 @@ private fun DrinkDetail(drink: Drink, modifier: Modifier = Modifier) {
             }
 
             drink.strInstructions?.let { instructions ->
-                Text("Instructions", style = MaterialTheme.typography.titleMedium)
+                Text(stringResource(R.string.instructions), style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(instructions, style = MaterialTheme.typography.bodyMedium)
             }

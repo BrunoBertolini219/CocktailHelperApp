@@ -21,16 +21,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import br.com.brunoccbertolini.cocktailhelperapp.ui.screens.CocktailListScreen
-import br.com.brunoccbertolini.cocktailhelperapp.ui.screens.DetailScreen
-import br.com.brunoccbertolini.cocktailhelperapp.ui.screens.FavoritesScreen
-import br.com.brunoccbertolini.cocktailhelperapp.ui.screens.RandomDrinkScreen
-import br.com.brunoccbertolini.cocktailhelperapp.ui.screens.SearchScreen
+import br.com.brunoccbertolini.cocktailhelperapp.R
+import br.com.brunoccbertolini.cocktailhelperapp.ui.pages.alcoholic.CocktailListScreen
+import br.com.brunoccbertolini.cocktailhelperapp.ui.pages.detail.DetailScreen
+import br.com.brunoccbertolini.cocktailhelperapp.ui.pages.detail.RandomDrinkScreen
+import br.com.brunoccbertolini.cocktailhelperapp.ui.pages.favorites.FavoritesScreen
+import br.com.brunoccbertolini.cocktailhelperapp.ui.pages.search.SearchScreen
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -49,13 +51,13 @@ private object Routes {
     }
 }
 
-private data class NavItem(val route: String, val label: String, val icon: ImageVector)
+private data class NavItem(val route: String, val labelResId: Int, val icon: ImageVector)
 
 private val navItems = listOf(
-    NavItem(Routes.COCKTAIL_LIST, "Cocktails", Icons.Filled.Home),
-    NavItem(Routes.SEARCH, "Search", Icons.Filled.Search),
-    NavItem(Routes.FAVORITES, "Favorites", Icons.Filled.Favorite),
-    NavItem(Routes.RANDOM, "Random", Icons.Filled.Refresh)
+    NavItem(Routes.COCKTAIL_LIST, R.string.drinks, Icons.Filled.Home),
+    NavItem(Routes.SEARCH, R.string.search, Icons.Filled.Search),
+    NavItem(Routes.FAVORITES, R.string.favorites, Icons.Filled.Favorite),
+    NavItem(Routes.RANDOM, R.string.random_drink, Icons.Filled.Refresh)
 )
 
 @Composable
@@ -85,8 +87,8 @@ fun CocktailApp(windowSizeClass: WindowSizeClass) {
                             NavigationBarItem(
                                 selected = currentRoute == item.route,
                                 onClick = { navigate(item.route) },
-                                icon = { Icon(item.icon, contentDescription = item.label) },
-                                label = { Text(item.label) }
+                                icon = { Icon(item.icon, contentDescription = stringResource(item.labelResId)) },
+                                label = { Text(stringResource(item.labelResId)) }
                             )
                         }
                     }
@@ -106,8 +108,8 @@ fun CocktailApp(windowSizeClass: WindowSizeClass) {
                         NavigationRailItem(
                             selected = currentRoute == item.route,
                             onClick = { navigate(item.route) },
-                            icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) }
+                            icon = { Icon(item.icon, contentDescription = stringResource(item.labelResId)) },
+                            label = { Text(stringResource(item.labelResId)) }
                         )
                     }
                 }

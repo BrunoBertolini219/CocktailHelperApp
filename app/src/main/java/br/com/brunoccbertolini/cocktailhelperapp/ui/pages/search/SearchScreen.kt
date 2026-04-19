@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.cocktailhelperapp.ui.screens
+package br.com.brunoccbertolini.cocktailhelperapp.ui.pages.search
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,14 +26,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.DrinkCard
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.ErrorContent
 import br.com.brunoccbertolini.cocktailhelperapp.ui.components.LoadingContent
-import br.com.brunoccbertolini.cocktailhelperapp.ui.fragments.search.SearchCocktailViewModel
 import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.searchName
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.delay
@@ -60,7 +61,7 @@ fun SearchScreen(
         OutlinedTextField(
             value = query,
             onValueChange = { query = it },
-            placeholder = { Text("Search cocktails...") },
+            placeholder = { Text(stringResource(R.string.search_hint)) },
             leadingIcon = { Icon(Icons.Filled.Search, contentDescription = null) },
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
@@ -70,13 +71,13 @@ fun SearchScreen(
             FilterChip(
                 selected = searchType == searchName,
                 onClick = { searchType = searchName },
-                label = { Text("By Name") }
+                label = { Text(stringResource(R.string.by_name)) }
             )
             Spacer(modifier = Modifier.width(8.dp))
             FilterChip(
                 selected = searchType != searchName,
                 onClick = { searchType = "ingredient" },
-                label = { Text("By Ingredient") }
+                label = { Text(stringResource(R.string.by_ingredient)) }
             )
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -84,21 +85,21 @@ fun SearchScreen(
         when {
             query.isBlank() -> {
                 Text(
-                    text = "Type a name or ingredient to search",
+                    text = stringResource(R.string.search_prompt),
                     modifier = Modifier.padding(top = 32.dp).align(Alignment.CenterHorizontally)
                 )
             }
             searchState == null -> {}
             searchState is Resource.Loading -> LoadingContent()
             searchState is Resource.Error -> ErrorContent(
-                message = (searchState as Resource.Error).message ?: "Search failed",
+                message = (searchState as Resource.Error).message ?: stringResource(R.string.search_failed),
                 onRetry = { viewModel.searchCocktail(query, searchType) }
             )
             searchState is Resource.Success -> {
                 val drinks = (searchState as Resource.Success).data?.drinks ?: emptyList()
                 if (drinks.isEmpty()) {
                     Text(
-                        text = "No results found",
+                        text = stringResource(R.string.no_results),
                         modifier = Modifier.padding(top = 32.dp).align(Alignment.CenterHorizontally)
                     )
                 } else {
