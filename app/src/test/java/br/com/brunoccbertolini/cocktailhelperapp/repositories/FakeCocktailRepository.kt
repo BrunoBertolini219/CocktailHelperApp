@@ -42,6 +42,10 @@ class FakeCocktailRepository : CocktailRepository {
 
     override fun getSavedCocktails(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
 
+    override fun getCachedAlcoholicDrinks(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
+
+    override fun getCachedNonAlcoholicDrinks(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
+
     override suspend fun upsert(drink: DrinkPreview) {
         if (drink.strDrink.isEmpty() || drink.strDrinkThumb.isNullOrEmpty()) {
             Resource.Error("ERROR", null)

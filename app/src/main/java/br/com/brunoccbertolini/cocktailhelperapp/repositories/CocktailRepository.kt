@@ -20,6 +20,10 @@ interface CocktailRepository {
 
     fun getSavedCocktails(): Flow<List<DrinkPreview>>
 
+    fun getCachedAlcoholicDrinks(): Flow<List<DrinkPreview>>
+
+    fun getCachedNonAlcoholicDrinks(): Flow<List<DrinkPreview>>
+
     suspend fun upsert(drink: DrinkPreview)
 
     suspend fun searchDrinkByName(searchDrinkName: String): Resource<CocktailList>

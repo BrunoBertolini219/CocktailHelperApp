@@ -26,7 +26,9 @@ object AppModule {
     @Provides
     fun provideCocktailDatabase(
         @ApplicationContext context: Context
-    ) = Room.databaseBuilder(context, CocktailDatabase::class.java, DATABASE_NAME).build()
+    ) = Room.databaseBuilder(context, CocktailDatabase::class.java, DATABASE_NAME)
+        .addMigrations(CocktailDatabase.MIGRATION_1_2)
+        .build()
 
     @Singleton
     @Provides
