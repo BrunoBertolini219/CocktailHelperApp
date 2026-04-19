@@ -1,10 +1,10 @@
 package br.com.brunoccbertolini.cocktailhelperapp.repositories
 
-import androidx.lifecycle.LiveData
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import kotlinx.coroutines.flow.Flow
 
 interface CocktailRepository {
 
@@ -14,16 +14,19 @@ interface CocktailRepository {
 
     suspend fun searchDrinkById(searchDrinkId: String): Resource<DrinkList>
 
-    suspend fun randomDrink():Resource<DrinkList>
+    suspend fun randomDrink(): Resource<DrinkList>
 
     suspend fun deleteCocktail(drink: DrinkPreview)
 
-    fun getSavedCocktails(): LiveData<List<DrinkPreview>>
+    fun getSavedCocktails(): Flow<List<DrinkPreview>>
+
+    fun getCachedAlcoholicDrinks(): Flow<List<DrinkPreview>>
+
+    fun getCachedNonAlcoholicDrinks(): Flow<List<DrinkPreview>>
 
     suspend fun upsert(drink: DrinkPreview)
 
     suspend fun searchDrinkByName(searchDrinkName: String): Resource<CocktailList>
 
     suspend fun searchDrinkByIngredient(searchDrinkIngredient: String): Resource<CocktailList>
-
 }

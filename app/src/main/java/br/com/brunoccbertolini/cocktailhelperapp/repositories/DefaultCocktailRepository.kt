@@ -1,26 +1,47 @@
 package br.com.brunoccbertolini.cocktailhelperapp.repositories
 
-import androidx.lifecycle.LiveData
 import br.com.brunoccbertolini.cocktailhelperapp.api.CocktailAPI
+import br.com.brunoccbertolini.cocktailhelperapp.db.CachedDrinkEntity
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDao
+import br.com.brunoccbertolini.cocktailhelperapp.db.toCacheEntity
+import br.com.brunoccbertolini.cocktailhelperapp.db.toDrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import retrofit2.Response
 import javax.inject.Inject
-
 
 class DefaultCocktailRepository @Inject constructor(
     private val cocktailDao: CocktailDao,
     private val cocktailApi: CocktailAPI
 ) : CocktailRepository {
+
+    companion object {
+        const val ALCOHOLIC = "alcoholic"
+        const val NON_ALCOHOLIC = "non_alcoholic"
+    }
+
     override suspend fun getAllAlcoholicDrinks(): Resource<CocktailList> {
-        return handleCocktailListResponse(cocktailApi.getAllAlcoholicDrinks())
+        val result = handleCocktailListResponse(cocktailApi.getAllAlcoholicDrinks())
+        if (result is Resource.Success) {
+            val drinks = result.data?.drinks ?: emptyList()
+            cocktailDao.clearCachedDrinks(ALCOHOLIC)
+            cocktailDao.insertCachedDrinks(drinks.map { it.toCacheEntity(ALCOHOLIC) })
+        }
+        return result
     }
 
     override suspend fun getAllNoAlcoholicDrinks(): Resource<CocktailList> {
-        return handleCocktailListResponse(cocktailApi.getAllNoAlcoholicDrinks())
+        val result = handleCocktailListResponse(cocktailApi.getAllNoAlcoholicDrinks())
+        if (result is Resource.Success) {
+            val drinks = result.data?.drinks ?: emptyList()
+            cocktailDao.clearCachedDrinks(NON_ALCOHOLIC)
+            cocktailDao.insertCachedDrinks(drinks.map { it.toCacheEntity(NON_ALCOHOLIC) })
+        }
+        return result
     }
 
     override suspend fun searchDrinkById(searchDrinkId: String): Resource<DrinkList> {
@@ -35,8 +56,16 @@ class DefaultCocktailRepository @Inject constructor(
         cocktailDao.deleteCocktail(drink)
     }
 
-    override fun getSavedCocktails(): LiveData<List<DrinkPreview>> {
+    override fun getSavedCocktails(): Flow<List<DrinkPreview>> {
         return cocktailDao.getAllCocktail()
+    }
+
+    override fun getCachedAlcoholicDrinks(): Flow<List<DrinkPreview>> {
+        return cocktailDao.getCachedDrinks(ALCOHOLIC).map { list -> list.map { it.toDrinkPreview() } }
+    }
+
+    override fun getCachedNonAlcoholicDrinks(): Flow<List<DrinkPreview>> {
+        return cocktailDao.getCachedDrinks(NON_ALCOHOLIC).map { list -> list.map { it.toDrinkPreview() } }
     }
 
     override suspend fun upsert(drink: DrinkPreview) {
@@ -56,15 +85,12 @@ class DefaultCocktailRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.Success(it)
-                } ?: Resource.Error("An unknown error has ocrrured")
+                } ?: Resource.Error("An unknown error has occurred")
             } else {
-                return Resource.Error("An unknown error has ocurred")
+                Resource.Error("An unknown error has occurred")
             }
         } catch (e: Exception) {
-            return Resource.Error(
-                "We couldn't reach the server. Check your internet connection",
-                null
-            )
+            Resource.Error("We couldn't reach the server. Check your internet connection", null)
         }
     }
 
@@ -73,17 +99,12 @@ class DefaultCocktailRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.Success(it)
-                } ?: Resource.Error("An unknown error has ocrrured")
+                } ?: Resource.Error("An unknown error has occurred")
             } else {
-                return Resource.Error("An unknown error has ocurred")
+                Resource.Error("An unknown error has occurred")
             }
         } catch (e: Exception) {
-            return Resource.Error(
-                "We couldn't reach the server. Check your internet connection",
-                null
-            )
+            Resource.Error("We couldn't reach the server. Check your internet connection", null)
         }
     }
-
-
 }
