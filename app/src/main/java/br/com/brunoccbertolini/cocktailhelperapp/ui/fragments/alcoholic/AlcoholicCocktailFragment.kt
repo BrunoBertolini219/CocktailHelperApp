@@ -9,23 +9,22 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import br.com.brunoccbertolini.cocktailhelperapp.R
 import br.com.brunoccbertolini.cocktailhelperapp.adapter.CocktailListAdapter
 import br.com.brunoccbertolini.cocktailhelperapp.databinding.FragmentAlcoholicCocktailBinding
-import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
-import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.ConnectionLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
-import dagger.hilt.EntryPoint
 import dagger.hilt.android.AndroidEntryPoint
-
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class AlcoholicCocktailFragment : Fragment() {
-
 
     private var _viewBinding: FragmentAlcoholicCocktailBinding? = null
     private val viewBinding: FragmentAlcoholicCocktailBinding get() = _viewBinding!!
@@ -51,20 +50,6 @@ class AlcoholicCocktailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        connectionLiveData = ConnectionLiveData(this.requireContext())
-        connectionLiveData.observe(viewLifecycleOwner, { isAvailable ->
-            if (isAvailable) {
-                viewModelAlcoholic.getAlcoholicCocktails()
-                setupObservers()
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "No Internet Connection Available!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        })
-
         setupRecyclerView()
 
         adapterCocktail.setOnItemClickListener {
@@ -76,30 +61,37 @@ class AlcoholicCocktailFragment : Fragment() {
                 bundle
             )
         }
-    }
 
-    private fun setupObservers() {
-        viewModelAlcoholic.cocktailAlcoholic.observe(viewLifecycleOwner, { response ->
-            when (response) {
-                is Resource.Success -> {
-                    response.data?.let { cocktailResponse ->
-                        adapterCocktail.differ.submitList(cocktailResponse.drinks)
-                        hideProgressBar()
+        connectionLiveData = ConnectionLiveData(requireContext())
+        connectionLiveData.observe(viewLifecycleOwner) { isAvailable ->
+            if (isAvailable) {
+                viewModelAlcoholic.getAlcoholicCocktails()
+            } else {
+                Toast.makeText(requireContext(), "No Internet Connection Available!", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModelAlcoholic.cocktailAlcoholic.collectLatest { response ->
+                    when (response) {
+                        is Resource.Success -> {
+                            response.data?.let { cocktailResponse ->
+                                adapterCocktail.differ.submitList(cocktailResponse.drinks)
+                                hideProgressBar()
+                            }
+                        }
+                        is Resource.Error -> {
+                            response.message?.let { message ->
+                                Log.e(TAG, "An Error Occurred $message")
+                                hideProgressBar()
+                            }
+                        }
+                        is Resource.Loading -> showProgressBar()
                     }
-                }
-                is Resource.Error -> {
-                    response.message?.let { message ->
-                        Log.e(TAG, "An Error Occured $message")
-                        hideProgressBar()
-                    }
-                }
-
-                is Resource.Loading -> {
-                    showProgressBar()
-
                 }
             }
-        })
+        }
     }
 
     private fun hideProgressBar() {
@@ -115,12 +107,12 @@ class AlcoholicCocktailFragment : Fragment() {
         viewBinding.rvCocktailList.apply {
             adapter = adapterCocktail
             setHasFixedSize(true)
-            layoutManager = GridLayoutManager(this@AlcoholicCocktailFragment.requireContext(), 2)
+            layoutManager = GridLayoutManager(requireContext(), 2)
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
         _viewBinding = null
     }
 }

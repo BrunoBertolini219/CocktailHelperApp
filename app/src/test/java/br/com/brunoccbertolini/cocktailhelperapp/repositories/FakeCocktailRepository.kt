@@ -1,17 +1,17 @@
 package br.com.brunoccbertolini.cocktailhelperapp.repositories
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class FakeCocktailRepository : CocktailRepository {
 
     private val cocktailsList = mutableListOf<DrinkPreview>()
-
-    private val observableDrinkPreview = MutableLiveData<List<DrinkPreview>>(cocktailsList)
+    private val observableDrinkPreview = MutableStateFlow<List<DrinkPreview>>(emptyList())
 
     private var shouldReturnNetworkError = false
 
@@ -19,49 +19,35 @@ class FakeCocktailRepository : CocktailRepository {
         shouldReturnNetworkError = value
     }
 
-    private fun refreshLiveData() {
-        observableDrinkPreview.postValue(cocktailsList)
+    private fun refreshFlow() {
+        observableDrinkPreview.value = cocktailsList.toList()
     }
 
-    override suspend fun getAllAlcoholicDrinks(): Resource<CocktailList> {
-        return checkResourceCocktailWorks()
-    }
+    override suspend fun getAllAlcoholicDrinks(): Resource<CocktailList> = checkResourceCocktailWorks()
 
-    override suspend fun getAllNoAlcoholicDrinks(): Resource<CocktailList> {
-        return checkResourceCocktailWorks()
-    }
+    override suspend fun getAllNoAlcoholicDrinks(): Resource<CocktailList> = checkResourceCocktailWorks()
 
-    override suspend fun searchDrinkById(searchDrinkId: String): Resource<DrinkList> {
-        return checkResourceDrinkWorks()
-    }
+    override suspend fun searchDrinkById(searchDrinkId: String): Resource<DrinkList> = checkResourceDrinkWorks()
 
-    override suspend fun randomDrink(): Resource<DrinkList> {
-        return checkResourceDrinkWorks()
-    }
+    override suspend fun randomDrink(): Resource<DrinkList> = checkResourceDrinkWorks()
 
-    override suspend fun searchDrinkByName(searchDrinkName: String): Resource<CocktailList> {
-        return checkResourceCocktailWorks()
-    }
+    override suspend fun searchDrinkByName(searchDrinkName: String): Resource<CocktailList> = checkResourceCocktailWorks()
 
-    override suspend fun searchDrinkByIngredient(searchDrinkIngredient: String): Resource<CocktailList> {
-        return checkResourceCocktailWorks()
-    }
+    override suspend fun searchDrinkByIngredient(searchDrinkIngredient: String): Resource<CocktailList> = checkResourceCocktailWorks()
 
     override suspend fun deleteCocktail(drink: DrinkPreview) {
         cocktailsList.remove(drink)
-        refreshLiveData()
+        refreshFlow()
     }
 
-    override fun getSavedCocktails(): LiveData<List<DrinkPreview>> {
-        return observableDrinkPreview
-    }
+    override fun getSavedCocktails(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
 
     override suspend fun upsert(drink: DrinkPreview) {
-        if(drink.strDrink.isEmpty() || drink.strDrinkThumb.isNullOrEmpty()){
+        if (drink.strDrink.isEmpty() || drink.strDrinkThumb.isNullOrEmpty()) {
             Resource.Error("ERROR", null)
-        }else {
+        } else {
             cocktailsList.add(drink)
-            refreshLiveData()
+            refreshFlow()
         }
     }
 

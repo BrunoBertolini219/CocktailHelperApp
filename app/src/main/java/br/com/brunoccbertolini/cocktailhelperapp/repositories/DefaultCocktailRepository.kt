@@ -1,12 +1,12 @@
 package br.com.brunoccbertolini.cocktailhelperapp.repositories
 
-import androidx.lifecycle.LiveData
 import br.com.brunoccbertolini.cocktailhelperapp.api.CocktailAPI
 import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDao
 import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
+import kotlinx.coroutines.flow.Flow
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -35,7 +35,7 @@ class DefaultCocktailRepository @Inject constructor(
         cocktailDao.deleteCocktail(drink)
     }
 
-    override fun getSavedCocktails(): LiveData<List<DrinkPreview>> {
+    override fun getSavedCocktails(): Flow<List<DrinkPreview>> {
         return cocktailDao.getAllCocktail()
     }
 
@@ -56,15 +56,12 @@ class DefaultCocktailRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.Success(it)
-                } ?: Resource.Error("An unknown error has ocrrured")
+                } ?: Resource.Error("An unknown error has occurred")
             } else {
-                return Resource.Error("An unknown error has ocurred")
+                Resource.Error("An unknown error has occurred")
             }
         } catch (e: Exception) {
-            return Resource.Error(
-                "We couldn't reach the server. Check your internet connection",
-                null
-            )
+            Resource.Error("We couldn't reach the server. Check your internet connection", null)
         }
     }
 
@@ -73,17 +70,12 @@ class DefaultCocktailRepository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let {
                     return@let Resource.Success(it)
-                } ?: Resource.Error("An unknown error has ocrrured")
+                } ?: Resource.Error("An unknown error has occurred")
             } else {
-                return Resource.Error("An unknown error has ocurred")
+                Resource.Error("An unknown error has occurred")
             }
         } catch (e: Exception) {
-            return Resource.Error(
-                "We couldn't reach the server. Check your internet connection",
-                null
-            )
+            Resource.Error("We couldn't reach the server. Check your internet connection", null)
         }
     }
-
-
 }

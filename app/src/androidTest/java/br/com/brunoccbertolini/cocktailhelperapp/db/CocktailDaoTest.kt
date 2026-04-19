@@ -2,12 +2,12 @@ package br.com.brunoccbertolini.cocktailhelperapp.db
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
-import br.com.brunoccbertolini.cocktailhelperapp.getOrAwaitValue
 import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -33,13 +33,11 @@ class CocktailDaoTest {
     lateinit var database: CocktailDatabase
     private lateinit var dao: CocktailDao
 
-
     @Before
     fun setup() {
         hiltRule.inject()
         dao = database.getCocktailDao()
     }
-
 
     @After
     fun teardown() {
@@ -47,22 +45,22 @@ class CocktailDaoTest {
     }
 
     @Test
-    fun insertCocktail() = runBlockingTest {
+    fun insertCocktail() = runTest {
         val drink = DrinkPreview("1", "Pitu", "url")
         dao.upsert(drink)
 
-        val allDrinks = dao.getAllCocktail().getOrAwaitValue()
+        val allDrinks = dao.getAllCocktail().first()
 
         assertTrue(allDrinks.contains(drink))
     }
 
     @Test
-    fun deleteCocktail() = runBlockingTest {
+    fun deleteCocktail() = runTest {
         val drink = DrinkPreview("1", "Pitu", "url")
         dao.upsert(drink)
         dao.deleteCocktail(drink)
 
-        val allDrinks = dao.getAllCocktail().getOrAwaitValue()
+        val allDrinks = dao.getAllCocktail().first()
 
         assertFalse(allDrinks.contains(drink))
     }
