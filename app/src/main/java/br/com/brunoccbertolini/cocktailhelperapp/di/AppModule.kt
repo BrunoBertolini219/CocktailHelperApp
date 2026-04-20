@@ -2,13 +2,11 @@ package br.com.brunoccbertolini.cocktailhelperapp.di
 
 import android.content.Context
 import androidx.room.Room
-import br.com.brunoccbertolini.cocktailhelperapp.api.CocktailAPI
-import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDao
-import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
-import br.com.brunoccbertolini.cocktailhelperapp.repositories.CocktailRepository
-import br.com.brunoccbertolini.cocktailhelperapp.repositories.DefaultCocktailRepository
-import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.BASE_URL
-import br.com.brunoccbertolini.cocktailhelperapp.util.Constrants.Companion.DATABASE_NAME
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.dao.CocktailDao
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.database.CocktailDatabase
+import br.com.brunoccbertolini.cocktailhelperapp.data.remote.api.CocktailApi
+import br.com.brunoccbertolini.cocktailhelperapp.data.repository.CocktailRepositoryImpl
+import br.com.brunoccbertolini.cocktailhelperapp.domain.repository.CocktailRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,36 +20,35 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    private const val BASE_URL = "https://www.thecocktaildb.com/"
+
     @Singleton
     @Provides
     fun provideCocktailDatabase(
         @ApplicationContext context: Context
-    ) = Room.databaseBuilder(context, CocktailDatabase::class.java, DATABASE_NAME)
-        .addMigrations(CocktailDatabase.MIGRATION_1_2)
+    ): CocktailDatabase = Room.databaseBuilder(
+        context,
+        CocktailDatabase::class.java,
+        CocktailDatabase.DATABASE_NAME
+    ).addMigrations(CocktailDatabase.MIGRATION_1_2).build()
+
+    @Singleton
+    @Provides
+    fun provideCocktailDao(database: CocktailDatabase): CocktailDao =
+        database.getCocktailDao()
+
+    @Singleton
+    @Provides
+    fun provideCocktailApi(): CocktailApi = Retrofit.Builder()
+        .addConverterFactory(GsonConverterFactory.create())
+        .baseUrl(BASE_URL)
         .build()
+        .create(CocktailApi::class.java)
 
     @Singleton
     @Provides
-    fun provideCocktailDao(
-        database: CocktailDatabase
-    ) = database.getCocktailDao()
-
-    @Singleton
-    @Provides
-    fun provideCocktailApi(): CocktailAPI {
-        return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BASE_URL)
-            .build()
-            .create(CocktailAPI::class.java)
-    }
-
-    @Singleton
-    @Provides
-    fun provideDefaultCocktailRepository(
-        api: CocktailAPI,
+    fun provideCocktailRepository(
+        api: CocktailApi,
         dao: CocktailDao
-    ): CocktailRepository = DefaultCocktailRepository(dao, api)
-
-
+    ): CocktailRepository = CocktailRepositoryImpl(dao, api)
 }

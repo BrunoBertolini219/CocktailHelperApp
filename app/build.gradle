@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.hilt)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -97,6 +98,9 @@ dependencies {
     implementation platform(libs.firebase.bom)
     implementation libs.firebase.crashlytics
     implementation libs.firebase.analytics
+
+    // Serialization
+    implementation libs.kotlinx.serialization.json
 
     // Timber
     implementation libs.timber

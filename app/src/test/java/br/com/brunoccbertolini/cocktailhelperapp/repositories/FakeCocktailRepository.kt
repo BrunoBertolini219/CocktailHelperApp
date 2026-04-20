@@ -1,73 +1,62 @@
 package br.com.brunoccbertolini.cocktailhelperapp.repositories
 
-import br.com.brunoccbertolini.cocktailhelperapp.model.CocktailList
-import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkList
-import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
+import br.com.brunoccbertolini.cocktailhelperapp.domain.model.DrinkDetail
+import br.com.brunoccbertolini.cocktailhelperapp.domain.model.DrinkSummary
+import br.com.brunoccbertolini.cocktailhelperapp.domain.repository.CocktailRepository
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
 
 class FakeCocktailRepository : CocktailRepository {
 
-    private val cocktailsList = mutableListOf<DrinkPreview>()
-    private val observableDrinkPreview = MutableStateFlow<List<DrinkPreview>>(emptyList())
+    private val favoritesList = mutableListOf<DrinkSummary>()
+    private val observableFavorites = MutableStateFlow<List<DrinkSummary>>(emptyList())
 
-    private var shouldReturnNetworkError = false
+    var shouldReturnNetworkError = false
 
-    fun setShouldReturnNetworkError(value: Boolean) {
-        shouldReturnNetworkError = value
+    private fun refreshFavorites() {
+        observableFavorites.value = favoritesList.toList()
     }
 
-    private fun refreshFlow() {
-        observableDrinkPreview.value = cocktailsList.toList()
+    override fun getAlcoholicDrinks(): Flow<Resource<List<DrinkSummary>>> = flow {
+        emit(
+            if (shouldReturnNetworkError) Resource.Error("Error")
+            else Resource.Success(emptyList())
+        )
     }
 
-    override suspend fun getAllAlcoholicDrinks(): Resource<CocktailList> = checkResourceCocktailWorks()
-
-    override suspend fun getAllNoAlcoholicDrinks(): Resource<CocktailList> = checkResourceCocktailWorks()
-
-    override suspend fun searchDrinkById(searchDrinkId: String): Resource<DrinkList> = checkResourceDrinkWorks()
-
-    override suspend fun randomDrink(): Resource<DrinkList> = checkResourceDrinkWorks()
-
-    override suspend fun searchDrinkByName(searchDrinkName: String): Resource<CocktailList> = checkResourceCocktailWorks()
-
-    override suspend fun searchDrinkByIngredient(searchDrinkIngredient: String): Resource<CocktailList> = checkResourceCocktailWorks()
-
-    override suspend fun deleteCocktail(drink: DrinkPreview) {
-        cocktailsList.remove(drink)
-        refreshFlow()
+    override fun getNonAlcoholicDrinks(): Flow<Resource<List<DrinkSummary>>> = flow {
+        emit(
+            if (shouldReturnNetworkError) Resource.Error("Error")
+            else Resource.Success(emptyList())
+        )
     }
 
-    override fun getSavedCocktails(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
+    override suspend fun getDrinkDetail(id: String): Resource<DrinkDetail> =
+        if (shouldReturnNetworkError) Resource.Error("Error")
+        else Resource.Success(DrinkDetail(id, "Test", null, null, null, null, null, emptyList()))
 
-    override fun getCachedAlcoholicDrinks(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
+    override suspend fun searchByName(query: String): Resource<List<DrinkSummary>> =
+        if (shouldReturnNetworkError) Resource.Error("Error") else Resource.Success(emptyList())
 
-    override fun getCachedNonAlcoholicDrinks(): Flow<List<DrinkPreview>> = observableDrinkPreview.asStateFlow()
+    override suspend fun searchByIngredient(query: String): Resource<List<DrinkSummary>> =
+        if (shouldReturnNetworkError) Resource.Error("Error") else Resource.Success(emptyList())
 
-    override suspend fun upsert(drink: DrinkPreview) {
-        if (drink.strDrink.isEmpty() || drink.strDrinkThumb.isNullOrEmpty()) {
-            Resource.Error("ERROR", null)
-        } else {
-            cocktailsList.add(drink)
-            refreshFlow()
-        }
+    override suspend fun getRandomDrink(): Resource<DrinkDetail> =
+        if (shouldReturnNetworkError) Resource.Error("Error")
+        else Resource.Success(DrinkDetail("1", "Random", null, null, null, null, null, emptyList()))
+
+    override suspend fun saveFavorite(drink: DrinkSummary) {
+        favoritesList.add(drink)
+        refreshFavorites()
     }
 
-    private fun checkResourceCocktailWorks(): Resource<CocktailList> {
-        return if (shouldReturnNetworkError) {
-            Resource.Error("Error", null)
-        } else {
-            Resource.Success(CocktailList(listOf()))
-        }
-    }
+    override fun getFavorites(): Flow<List<DrinkSummary>> = observableFavorites.asStateFlow()
 
-    private fun checkResourceDrinkWorks(): Resource<DrinkList> {
-        return if (shouldReturnNetworkError) {
-            Resource.Error("Error", null)
-        } else {
-            Resource.Success(DrinkList(listOf()))
-        }
+    override suspend fun deleteFavorite(drink: DrinkSummary) {
+        favoritesList.remove(drink)
+        refreshFavorites()
     }
 }

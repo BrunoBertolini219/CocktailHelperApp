@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
-import br.com.brunoccbertolini.cocktailhelperapp.ui.navigation.CocktailApp
+import br.com.brunoccbertolini.cocktailhelperapp.presentation.navigation.CocktailApp
 import br.com.brunoccbertolini.cocktailhelperapp.ui.theme.CocktailHelperAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
