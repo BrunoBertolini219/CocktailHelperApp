@@ -2,7 +2,9 @@ package br.com.brunoccbertolini.cocktailhelperapp.db
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.filters.SmallTest
-import br.com.brunoccbertolini.cocktailhelperapp.model.DrinkPreview
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.dao.CocktailDao
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.database.CocktailDatabase
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.entity.DrinkPreviewEntity
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -46,21 +48,21 @@ class CocktailDaoTest {
 
     @Test
     fun insertCocktail() = runTest {
-        val drink = DrinkPreview("1", "Pitu", "url")
+        val drink = DrinkPreviewEntity("1", "Pitu", "url")
         dao.upsert(drink)
 
-        val allDrinks = dao.getAllCocktail().first()
+        val allDrinks = dao.getAllCocktails().first()
 
         assertTrue(allDrinks.contains(drink))
     }
 
     @Test
     fun deleteCocktail() = runTest {
-        val drink = DrinkPreview("1", "Pitu", "url")
+        val drink = DrinkPreviewEntity("1", "Pitu", "url")
         dao.upsert(drink)
         dao.deleteCocktail(drink)
 
-        val allDrinks = dao.getAllCocktail().first()
+        val allDrinks = dao.getAllCocktails().first()
 
         assertFalse(allDrinks.contains(drink))
     }

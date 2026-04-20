@@ -2,7 +2,7 @@ package br.com.brunoccbertolini.cocktailhelperapp.di
 
 import android.content.Context
 import androidx.room.Room
-import br.com.brunoccbertolini.cocktailhelperapp.db.CocktailDatabase
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.database.CocktailDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,8 +16,7 @@ object TestAppModule {
 
     @Provides
     @Named("test_db")
-    fun provideInMemoryDb(
-        @ApplicationContext context: Context) =
+    fun provideInMemoryDb(@ApplicationContext context: Context): CocktailDatabase =
         Room.inMemoryDatabaseBuilder(context, CocktailDatabase::class.java)
             .allowMainThreadQueries()
             .build()
