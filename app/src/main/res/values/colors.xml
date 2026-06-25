@@ -7,5 +7,7 @@
     <color name="teal_700">#701AAE</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Branded splash background (matches the launcher icon); see values-night for dark. -->
+    <color name="splash_background">#9A2143</color>
 </resources>
 

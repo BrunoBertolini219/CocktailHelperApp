@@ -1,5 +1,6 @@
 package br.com.brunoccbertolini.cocktailhelperapp.data.mapper
 
+import br.com.brunoccbertolini.cocktailhelperapp.data.local.entity.CachedDrinkDetailEntity
 import br.com.brunoccbertolini.cocktailhelperapp.data.local.entity.CachedDrinkEntity
 import br.com.brunoccbertolini.cocktailhelperapp.data.local.entity.DrinkPreviewEntity
 import br.com.brunoccbertolini.cocktailhelperapp.data.remote.dto.DrinkDetailDto
@@ -44,6 +45,28 @@ fun DrinkSummaryDto.toCacheEntity(type: String) = CachedDrinkEntity(
     strDrink = strDrink,
     strDrinkThumb = strDrinkThumb,
     drinkType = type
+)
+
+fun DrinkDetail.toDetailEntity() = CachedDrinkDetailEntity(
+    id = id,
+    name = name,
+    category = category,
+    alcoholic = alcoholic,
+    glass = glass,
+    instructions = instructions,
+    thumbnailUrl = thumbnailUrl,
+    ingredients = ingredients
+)
+
+fun CachedDrinkDetailEntity.toDomain() = DrinkDetail(
+    id = id,
+    name = name,
+    category = category,
+    alcoholic = alcoholic,
+    glass = glass,
+    instructions = instructions,
+    thumbnailUrl = thumbnailUrl,
+    ingredients = ingredients
 )
 
 fun DrinkDetailDto.toDomain(): DrinkDetail {

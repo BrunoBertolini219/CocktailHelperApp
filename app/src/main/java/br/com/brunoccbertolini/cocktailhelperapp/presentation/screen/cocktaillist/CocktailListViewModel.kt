@@ -2,14 +2,21 @@ package br.com.brunoccbertolini.cocktailhelperapp.presentation.screen.cocktailli
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import br.com.brunoccbertolini.cocktailhelperapp.domain.model.DrinkSummary
+import br.com.brunoccbertolini.cocktailhelperapp.domain.usecase.DeleteFavoriteDrinkUseCase
 import br.com.brunoccbertolini.cocktailhelperapp.domain.usecase.GetAlcoholicDrinksUseCase
+import br.com.brunoccbertolini.cocktailhelperapp.domain.usecase.GetFavoriteDrinksUseCase
 import br.com.brunoccbertolini.cocktailhelperapp.domain.usecase.GetNonAlcoholicDrinksUseCase
+import br.com.brunoccbertolini.cocktailhelperapp.domain.usecase.SaveFavoriteDrinkUseCase
+import br.com.brunoccbertolini.cocktailhelperapp.presentation.util.toUiText
 import br.com.brunoccbertolini.cocktailhelperapp.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,7 +25,10 @@ import javax.inject.Inject
 @HiltViewModel
 class CocktailListViewModel @Inject constructor(
     private val getAlcoholicDrinks: GetAlcoholicDrinksUseCase,
-    private val getNonAlcoholicDrinks: GetNonAlcoholicDrinksUseCase
+    private val getNonAlcoholicDrinks: GetNonAlcoholicDrinksUseCase,
+    getFavorites: GetFavoriteDrinksUseCase,
+    private val saveFavoriteDrink: SaveFavoriteDrinkUseCase,
+    private val deleteFavoriteDrink: DeleteFavoriteDrinkUseCase
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(CocktailListState())
@@ -30,6 +40,11 @@ class CocktailListViewModel @Inject constructor(
     init {
         loadAlcoholic()
         loadNonAlcoholic()
+        getFavorites()
+            .onEach { favorites ->
+                _state.update { it.copy(favoriteIds = favorites.mapTo(HashSet()) { drink -> drink.id }) }
+            }
+            .launchIn(viewModelScope)
     }
 
     fun onAction(action: CocktailListAction) {
@@ -39,6 +54,15 @@ class CocktailListViewModel @Inject constructor(
             is CocktailListAction.DrinkClicked -> viewModelScope.launch {
                 _events.send(CocktailListEvent.NavigateToDetail(action.drink))
             }
+            is CocktailListAction.ToggleFavorite -> toggleFavorite(action.drink)
+        }
+    }
+
+    private fun toggleFavorite(drink: DrinkSummary) = viewModelScope.launch {
+        if (_state.value.favoriteIds.contains(drink.id)) {
+            deleteFavoriteDrink(drink)
+        } else {
+            saveFavoriteDrink(drink)
         }
     }
 
@@ -65,7 +89,7 @@ class CocktailListViewModel @Inject constructor(
                         alcoholicDrinks = result.data ?: state.alcoholicDrinks,
                         alcoholicLoading = false,
                         isRefreshing = false,
-                        alcoholicError = result.message
+                        alcoholicError = result.error.toUiText()
                     )
                 }
             }
@@ -90,7 +114,7 @@ class CocktailListViewModel @Inject constructor(
                         nonAlcoholicDrinks = result.data ?: state.nonAlcoholicDrinks,
                         nonAlcoholicLoading = false,
                         isRefreshing = false,
-                        nonAlcoholicError = result.message
+                        nonAlcoholicError = result.error.toUiText()
                     )
                 }
             }

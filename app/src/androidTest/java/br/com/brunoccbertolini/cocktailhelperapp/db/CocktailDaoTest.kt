@@ -51,7 +51,7 @@ class CocktailDaoTest {
         val drink = DrinkPreviewEntity("1", "Pitu", "url")
         dao.upsert(drink)
 
-        val allDrinks = dao.getAllCocktails().first()
+        val allDrinks = dao.getAllFavorites().first()
 
         assertTrue(allDrinks.contains(drink))
     }
@@ -60,9 +60,9 @@ class CocktailDaoTest {
     fun deleteCocktail() = runTest {
         val drink = DrinkPreviewEntity("1", "Pitu", "url")
         dao.upsert(drink)
-        dao.deleteCocktail(drink)
+        dao.deleteFavorite(drink)
 
-        val allDrinks = dao.getAllCocktails().first()
+        val allDrinks = dao.getAllFavorites().first()
 
         assertFalse(allDrinks.contains(drink))
     }

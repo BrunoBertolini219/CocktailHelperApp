@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Release build outputs should not be tracked
+/app/release
+*.apk
+*.aab

@@ -6,4 +6,5 @@ sealed interface SearchAction {
     data class QueryChanged(val query: String) : SearchAction
     data class SearchTypeChanged(val type: SearchType) : SearchAction
     data class DrinkClicked(val drink: DrinkSummary) : SearchAction
+    data class ToggleFavorite(val drink: DrinkSummary) : SearchAction
 }

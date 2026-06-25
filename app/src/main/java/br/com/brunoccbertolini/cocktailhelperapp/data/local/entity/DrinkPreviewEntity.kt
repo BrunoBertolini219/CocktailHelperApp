@@ -3,7 +3,7 @@ package br.com.brunoccbertolini.cocktailhelperapp.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "cocktails")
+@Entity(tableName = "favorites")
 data class DrinkPreviewEntity(
     @PrimaryKey(autoGenerate = false)
     val idDrink: String,
